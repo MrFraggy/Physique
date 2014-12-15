@@ -17,7 +17,6 @@ static const Uint32 WINDOW_HEIGHT = 768;
 using namespace PartyKel;
 
 typedef std::shared_ptr<Masse> MassePtr;
-typedef std::shared_ptr<Link> LinkPtr;
 
 class CRenderer
 {
@@ -88,70 +87,42 @@ int main(void)
 
     Modeleur modeleur;
 
+    std::vector<MassePtr> masses;
+    masses.push_back(MassePtr(new MasseFixe(glm::vec3(-2.5,0,0))));
+    masses.push_back(MassePtr(new MasseLibre(glm::vec3(-2,0,0), 1.f)));
+    masses.push_back(MassePtr(new MasseLibre(glm::vec3(-1.5,0,0), 1.f)));
+    masses.push_back(MassePtr(new MasseLibre(glm::vec3(-1,0,0), 1.f)));
+    masses.push_back(MassePtr(new MasseLibre(glm::vec3(-0.5,0,0), 1.f)));
+    masses.push_back(MassePtr(new MasseLibre(glm::vec3(0,0,0), 1.f)));
+    masses.push_back(MassePtr(new MasseLibre(glm::vec3(0.5,0,0), 1.f)));
+    masses.push_back(MassePtr(new MasseLibre(glm::vec3(1.0,0,0), 1.f)));
+    masses.push_back(MassePtr(new MasseLibre(glm::vec3(1.5,0,0), 1.f)));
+    masses.push_back(MassePtr(new MasseLibre(glm::vec3(2,0,0), 1.f)));
+    masses.push_back(MassePtr(new MasseLibre(glm::vec3(2.5,0,0), 1.f)));
+    masses.push_back(MassePtr(new MasseFixe(glm::vec3(3,0,0))));
 
-    MassePtr masse1(new MasseFixe(glm::vec3(-2,0,0)));
-    MassePtr masse2(new MasseLibre(glm::vec3(-1.5,0,0), 1.f));
-    MassePtr masse3(new MasseLibre(glm::vec3(-1,0,0), 1.f));
-    MassePtr masse4(new MasseLibre(glm::vec3(-0.5,0,0), 1.f));
-    MassePtr masse5(new MasseLibre(glm::vec3(0,0,0), 1.f));
-    MassePtr masse6(new MasseLibre(glm::vec3(0.5,0,0), 1.f));
-    MassePtr masse7(new MasseLibre(glm::vec3(1.,0,0), 1.f));
-    MassePtr masse8(new MasseLibre(glm::vec3(1.5,0,0), 1.f));
-    MassePtr masse9(new MasseLibre(glm::vec3(2,0,0), 1.f));
-    MassePtr masse10(new MasseLibre(glm::vec3(2.5,0,0), 1.f));
-    MassePtr masse11(new MasseLibre(glm::vec3(3,0,0), 1.f));
-    MassePtr masse12(new MasseFixe(glm::vec3(3.5,0,0)));
+    std::vector<LinkPtr> links;
+    links.push_back(getRessortFrein(masses.at(0).get(), masses.at(1).get()));
+    links.push_back(getRessortFrein(masses.at(1).get(), masses.at(2).get()));
+    links.push_back(getRessortFrein(masses.at(2).get(), masses.at(3).get()));
+    links.push_back(getRessortFrein(masses.at(3).get(), masses.at(4).get()));
+    links.push_back(getRessortFrein(masses.at(4).get(), masses.at(5).get()));
+    links.push_back(getRessortFrein(masses.at(5).get(), masses.at(6).get()));
+    links.push_back(getRessortFrein(masses.at(6).get(), masses.at(7).get()));
+    links.push_back(getRessortFrein(masses.at(7).get(), masses.at(8).get()));
+    links.push_back(getRessortFrein(masses.at(8).get(), masses.at(9).get()));
+    links.push_back(getRessortFrein(masses.at(9).get(), masses.at(10).get()));
+    links.push_back(getRessortFrein(masses.at(10).get(), masses.at(11).get()));
 
-    LinkPtr link1(new RessortLink(masse1.get(), masse2.get()));
-    LinkPtr link2(new RessortLink(masse2.get(), masse3.get()));
-    LinkPtr link3(new RessortLink(masse3.get(), masse4.get()));
-    LinkPtr link4(new RessortLink(masse4.get(), masse5.get()));
-    LinkPtr link5(new RessortLink(masse5.get(), masse6.get()));
-    LinkPtr link6(new RessortLink(masse6.get(), masse7.get()));
-    LinkPtr link7(new RessortLink(masse7.get(), masse8.get()));
-    LinkPtr link8(new RessortLink(masse8.get(), masse9.get()));
-    LinkPtr link9(new RessortLink(masse9.get(), masse10.get()));
-    LinkPtr link10(new RessortLink(masse10.get(), masse11.get()));
-    LinkPtr link11(new RessortLink(masse11.get(), masse12.get()));
+    for(auto& m: masses)
+        modeleur.addMasse(m);
 
-    modeleur.addMasse(masse1);
-    modeleur.addMasse(masse2);
-    modeleur.addMasse(masse3);
-    modeleur.addMasse(masse4);  
-    modeleur.addMasse(masse5);  
-    modeleur.addMasse(masse6);  
-    modeleur.addMasse(masse7);  
-    modeleur.addMasse(masse8);  
-    modeleur.addMasse(masse9);  
-    modeleur.addMasse(masse10);  
-    modeleur.addMasse(masse11);  
-    modeleur.addMasse(masse12);  
-
-    modeleur.addLink(link1);
-    modeleur.addLink(link2);
-    modeleur.addLink(link3);
-    modeleur.addLink(link4);
-    modeleur.addLink(link5);
-    modeleur.addLink(link6);
-    modeleur.addLink(link7);
-    modeleur.addLink(link8);
-    modeleur.addLink(link9);
-    modeleur.addLink(link10);
-    modeleur.addLink(link11);
+    for(auto& l: links)
+        modeleur.addLink(l);
 
     CRenderer renderer;
-    renderer.addMasse(masse1);
-    renderer.addMasse(masse2);
-    renderer.addMasse(masse3);
-    renderer.addMasse(masse4);
-    renderer.addMasse(masse5);
-    renderer.addMasse(masse6);
-    renderer.addMasse(masse7);
-    renderer.addMasse(masse8);
-    renderer.addMasse(masse9);
-    renderer.addMasse(masse10);
-    renderer.addMasse(masse11);
-    renderer.addMasse(masse12);
+    for(auto& m: masses)
+        renderer.addMasse(m);
 
     std::thread physicThread([&modeleur, &done]() {
 

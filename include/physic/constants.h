@@ -5,6 +5,8 @@
 
 static const float dt = 1/100.f;
 
+static const float Fe = 1/dt;
+
 static const float G = -10.f;
 
 #endif

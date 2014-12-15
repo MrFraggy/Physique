@@ -5,61 +5,90 @@
 
 #include <glm/glm.hpp>
 #include <physic/masse.h>
+#include <memory>
+#include <vector>
+
+class Force
+{
+public:
+	virtual void init(Masse* m1, Masse* m2) {};
+	virtual void onUpdate(Masse* m1, Masse* m2) = 0;
+};
 
 class Link
 {
 public:
-	Link(Masse* m1, Masse* m2, float raideur = 10000, float viscosite = 1);
+	Link(Masse* m1, Masse* m2);
 
 	void update();
 
-protected:
-	virtual void onUpdate() = 0;
+	void addComponent(const std::shared_ptr<Force>& f);
 
+protected:
 	Masse* masses[2];
-	glm::vec3 force;
-	float raideur;
-	float viscosite;
 	float longueurAVide;
+	std::vector<std::shared_ptr<Force>> components;
 
 	// Seuils divers, flags divers
 };
 
-class ConstantForceLink : public Link
-{
-protected:
-	void onUpdate();
-};
-
-class RessortLink : public Link
+class Ressort : public Force
 {
 public:
-	RessortLink(Masse* m1, Masse* m2) : Link(m1,m2) {}
+	Ressort(float raideur = 10000);
+	void onUpdate(Masse* m1, Masse* m2);
+	void init(Masse* m1, Masse* m2);
+
+protected:
+	float raideur;
+	float longueurAVide;
+};
+
+class Frein : public Force
+{
+public:
+	Frein(float viscosite = 100);
+	void onUpdate(Masse* m1, Masse* m2);
+protected:
+	float viscosite;
+};
+
+typedef std::shared_ptr<Frein> FreinPtr;
+typedef std::shared_ptr<Ressort> RessortPtr;
+typedef std::shared_ptr<Link> LinkPtr;
+
+inline LinkPtr getRessortFrein(Masse* m1, Masse* m2)
+{
+	LinkPtr l(new Link(m1, m2));
+	l->addComponent(FreinPtr(new Frein()));
+	l->addComponent(RessortPtr(new Ressort()));
+
+	return l;
+} 
+/*
+class RessortFreinLink : public Link
+{
+public:
+	RessortFreinLink(Masse* m1, Masse* m2) : Link(m1,m2) {}
+
 protected:
 	void onUpdate()
 	{
-		glm::vec3 v = masses[0]->getPosition()-masses[1]->getPosition();
-		float dist = glm::length(v);
+		glm::vec3 dir = masses[0]->getPosition()-masses[1]->getPosition();
+		float dist = glm::length(dir);
 
 		if(dist < 0.001f)
 			return;
 
-		float f = -raideur*(1-(longueurAVide/dist));
-		masses[0]->addForce(v*f);
-		masses[1]->addForce(-v*f);		
+		float forceRessort = -raideur*(1-(longueurAVide/dist));
+		masses[0]->addForce(dir*forceRessort);
+		masses[1]->addForce(-dir*forceRessort);
+
+		glm::vec3 forceFrein = (masses[0]->getVitesse() - masses[1]->getVitesse()) * (viscosite/Fe);
+
+		masses[0]->addForce(-forceFrein);
+		masses[1]->addForce(forceFrein);
 	}
-};
-
-class FreinLink : public Link
-{
-protected:
-	void onUpdate();
-};
-
-class RessortFreinLink : public Link
-{
-protected:
-	void onUpdate();
-};
+};*/
 
 #endif
