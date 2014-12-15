@@ -8,6 +8,11 @@
 #include <PartyKel/renderer/TrackballCamera.hpp>
 
 #include <physic/modeleur.h>
+#include <physic/forces/ressort.h>
+#include <physic/forces/frein.h>
+#include <physic/masses/libre.h>
+#include <physic/masses/fixe.h>
+
 #include <vector>
 #include <thread>
 
@@ -63,6 +68,14 @@ protected:
 	std::vector<MassePtr> masses;
 	std::vector<LinkPtr> links;
 };
+
+inline LinkPtr getRessortFrein(Masse* m1, Masse* m2)
+{
+    LinkPtr l(new Link(m1, m2));
+    l->addComponent(FreinPtr(new Frein()));
+    l->addComponent(RessortPtr(new Ressort()));
+    return l;
+} 
 
 int main(void)
 {

@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <vector>
-#include <physic/masse.h>
+#include <physic/masses/masse.h>
 #include <physic/link.h>
 
 class Modeleur
@@ -10,10 +10,10 @@ class Modeleur
 public:
 	void update();
 
-	void addMasse(std::shared_ptr<Masse> m);
-	void addLink(std::shared_ptr<Link> l);
+	void addMasse(MassePtr m);
+	void addLink(LinkPtr l);
 	
 protected:
-	std::vector<std::shared_ptr<Masse>> masses;
-	std::vector<std::shared_ptr<Link>> links;
+	std::vector<MassePtr> masses;
+	std::vector<LinkPtr> links;
 };

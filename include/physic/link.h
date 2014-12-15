@@ -4,16 +4,11 @@
 #define C_LINK_H
 
 #include <glm/glm.hpp>
-#include <physic/masse.h>
+#include <physic/masses/masse.h>
+#include <physic/forces/force.h>
 #include <memory>
 #include <vector>
 
-class Force
-{
-public:
-	virtual void init(Masse* m1, Masse* m2) {};
-	virtual void onUpdate(Masse* m1, Masse* m2) = 0;
-};
 
 class Link
 {
@@ -32,39 +27,8 @@ protected:
 	// Seuils divers, flags divers
 };
 
-class Ressort : public Force
-{
-public:
-	Ressort(float raideur = 10000);
-	void onUpdate(Masse* m1, Masse* m2);
-	void init(Masse* m1, Masse* m2);
-
-protected:
-	float raideur;
-	float longueurAVide;
-};
-
-class Frein : public Force
-{
-public:
-	Frein(float viscosite = 100);
-	void onUpdate(Masse* m1, Masse* m2);
-protected:
-	float viscosite;
-};
-
-typedef std::shared_ptr<Frein> FreinPtr;
-typedef std::shared_ptr<Ressort> RessortPtr;
 typedef std::shared_ptr<Link> LinkPtr;
 
-inline LinkPtr getRessortFrein(Masse* m1, Masse* m2)
-{
-	LinkPtr l(new Link(m1, m2));
-	l->addComponent(FreinPtr(new Frein()));
-	l->addComponent(RessortPtr(new Ressort()));
-
-	return l;
-} 
 /*
 class RessortFreinLink : public Link
 {
