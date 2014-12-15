@@ -12,4 +12,6 @@ public:
 	virtual void onUpdate(Masse* m1, Masse* m2) = 0;
 };
 
+typedef std::shared_ptr<Force> ForcePtr;
+
 #endif

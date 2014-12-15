@@ -10,11 +10,14 @@
 #include <physic/modeleur.h>
 #include <physic/forces/ressort.h>
 #include <physic/forces/frein.h>
+#include <physic/forces/constante.h>
+#include <physic/forces/vent.h>
 #include <physic/masses/libre.h>
 #include <physic/masses/fixe.h>
 
 #include <vector>
 #include <thread>
+#include <ctime>
 
 static const Uint32 WINDOW_WIDTH = 1024;
 static const Uint32 WINDOW_HEIGHT = 768;
@@ -82,6 +85,7 @@ int main(void)
     WindowManager wm(WINDOW_WIDTH, WINDOW_HEIGHT, "Newton was a Geek");
     wm.setFramerate(30);
 
+    std::srand(std::time(0));
     // Création des particules
    /* StaticParticleManager particleManager;
     particleManager.addParticle(glm::vec3(0), 1, glm::vec3(1, 1, 1));
@@ -136,6 +140,9 @@ int main(void)
     CRenderer renderer;
     for(auto& m: masses)
         renderer.addMasse(m);
+
+    modeleur.addMacroForce(ForceConstantePtr(new ForceConstante(glm::vec3(0,G,0))));
+    modeleur.addMacroForce(VentPtr(new Vent(glm::vec3(0,0,-5))));
 
     std::thread physicThread([&modeleur, &done]() {
 

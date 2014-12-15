@@ -13,7 +13,7 @@ protected:
 	{
 		vit += frc*dt/masse;
 		pos += vit*dt;
-		frc = glm::vec3(0,G,0);
+		frc = glm::vec3(0,0,0);
 	}
 };
 
