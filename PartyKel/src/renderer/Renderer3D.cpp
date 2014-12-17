@@ -65,6 +65,11 @@ Renderer3D::Renderer3D():
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+
+    glGenBuffers(1, &m_IBOID);
+    glGenBuffers(1, &m_squareID);
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBOID);
+    //glBindBuffer(m_IBOID, 0);
 }
 
 Renderer3D::~Renderer3D() {
@@ -72,6 +77,8 @@ Renderer3D::~Renderer3D() {
 
     glDeleteBuffers(1, &m_SphereVBOID);
     glDeleteVertexArrays(1, &m_SphereVAOID);
+    glDeleteBuffers(1, &m_IBOID);
+    glDeleteBuffers(1, &m_squareID);
 }
 
 void Renderer3D::clear() {
@@ -100,6 +107,22 @@ void Renderer3D::drawParticles(uint32_t count,
     }
 
     glBindVertexArray(0);
+}
+
+void Renderer3D::drawSquare(uint32_t count,
+                   const glm::vec3* positionArray,
+                   uint32_t indicesCount,
+                   const unsigned int* indicesArray,
+                   const float* massArray,
+                   const glm::vec3* colorArray,
+                   float massScale)
+{
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBOID);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesCount* sizeof(unsigned int), indicesArray, GL_STATIC_DRAW);
+    glBindBuffer(m_IBOID, 0);
+
+    
+    glDrawElements(GL_TRIANGLES, indicesArray, GL_UNSIGNED_INT, (void*)0);
 }
 
 }

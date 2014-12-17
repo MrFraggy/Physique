@@ -37,7 +37,7 @@ private:
 
     // Ressources OpenGL
     GLuint m_SphereProgramID;
-    GLuint m_SphereVBOID, m_SphereVAOID;
+    GLuint m_SphereVBOID, m_SphereVAOID, m_IBOID, m_squareID;
 
     uint32_t m_nSphereVertexCount;
 

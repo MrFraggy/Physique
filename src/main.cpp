@@ -95,6 +95,7 @@ int main(void)
     //
 
     TrackballCamera camera;
+
     int mouseLastX, mouseLastY;
 
     // Temps s'écoulant entre chaque frame
@@ -104,6 +105,10 @@ int main(void)
 
     Modeleur modeleur;
 
+    /////////////////////////////////////
+    //  Pont / Ficelle 
+    /////////////////////////////////////
+    /*
     std::vector<MassePtr> masses;
     masses.push_back(MassePtr(new MasseFixe(glm::vec3(-2.5,0,0))));
     masses.push_back(MassePtr(new MasseLibre(glm::vec3(-2,0,0), 1.f)));
@@ -130,6 +135,107 @@ int main(void)
     links.push_back(getRessortFrein(masses.at(8).get(), masses.at(9).get()));
     links.push_back(getRessortFrein(masses.at(9).get(), masses.at(10).get()));
     links.push_back(getRessortFrein(masses.at(10).get(), masses.at(11).get()));
+    */
+
+    //////////////////////////////////////
+    //  Drapeau
+    //////////////////////////////////////
+
+    const int height = 25;
+    const int width = 25;
+    
+    std::vector<MassePtr> masses;
+    
+    for (int row = 0; row < height; ++row)
+    {
+        masses.push_back(MassePtr(new MasseFixe(glm::vec3(-width/2 * 0.1f, ((height / 2) - row) * 0.1f, 0))));
+    }
+
+    for(int col = 1; col < width; ++col)
+    {
+        for (int row = 0; row < height; ++row)
+        {
+            masses.push_back(MassePtr(new MasseLibre(glm::vec3(((-width/2) + col) * 0.1f, ((height / 2) - row)* 0.1f, 0), 1.f)));
+        }
+    }
+
+    std::vector<LinkPtr> links;
+/*
+    for(int col = 0; col < width-1; ++col)
+    {
+        for (int row = 0; row < height; ++row)
+        {
+            uint index = col*height+row, index2 = (col+1)*height+row;
+            links.push_back(getRessortFrein(masses.at(index).get(), masses.at(index2).get())); // droite
+            std::cout << "link: " << (col) << "," << row << " to " << (col+1) << "," << row << std::endl;
+        }
+    }
+
+    for(int col = 0; col < width; ++col)
+    {
+        for (int row = 0; row < height-1; ++row)
+        {
+            int index = col*height+row, index2 = col*height+row+1;
+            links.push_back(getRessortFrein(masses.at(index).get(), masses.at(index2).get())); // droite
+            std::cout << "link: " << (col) << "," << row << " to " << (col) << "," << row+1 << std::endl;
+        }
+    }
+
+    for(int col = 1; col < width-1; ++col)
+    {
+        for (int row = 0; row < height-1; ++row)
+        {
+            int index = col*height+row, index2 = (col+1)*height+(row+1);
+            links.push_back(getRessortFrein(masses.at(index).get(), masses.at(index2).get())); // droite
+            std::cout << "link: " << (col) << "," << row << " to " << (col+1) << "," << row+1 << std::endl;
+        }
+    }
+
+    for(int col = 1; col < width-1; ++col)
+    {
+        for (int row = 1; row < height; ++row)
+        {
+            int index = col*height+row, index2 = (col+1)*height+(row-1);
+            links.push_back(getRessortFrein(masses.at(index).get(), masses.at(index2).get())); // droite
+            std::cout << "link: " << (col) << "," << row << " to " << (col+1) << "," << row-1 << std::endl;
+        }
+    }*/
+    for(int col = 0; col < 1; ++col)
+    {
+        for (int row = 0; row < height; ++row)
+        {
+            uint index = col*height+row, index2 = (col+1)*height+row;
+            links.push_back(getRessortFrein(masses.at(index).get(), masses.at(index2).get())); // droite
+            std::cout << "link: " << (col) << "," << row << " to " << (col+1) << "," << row << std::endl;
+        }
+    }
+    for(int col = 1; col < width; ++col)
+    {
+        for (int row = 0; row < height; ++row)
+        {
+            uint index = col*height+row;
+            try {
+            if((col+1) < width)
+                links.push_back(getRessortFrein(masses.at(index).get(), masses.at((col+1)*height+row).get())); // droite
+            if((row+1) < height)
+                links.push_back(getRessortFrein(masses.at(index).get(), masses.at(col*height+(row+1)).get())); // bas
+            if((col+1) < width && (row+1) < height)
+                links.push_back(getRessortFrein(masses.at(index).get(), masses.at((col+1)*height+(row+1)).get())); // bas droite
+            if((col+1) < width && (row-1) >= 0)
+                links.push_back(getRessortFrein(masses.at(index).get(), masses.at((col+1)*height+(row-1)).get())); // haut droite
+            if((col+2) < width)
+                links.push_back(getRessortFrein(masses.at(index).get(), masses.at((col+2)*height+row).get())); // droite éloigné
+            if((row+2) < height)
+                links.push_back(getRessortFrein(masses.at(index).get(), masses.at(col*height+(row+2)).get())); // bas éloigné
+            } catch(std::exception& e)
+            {
+                std::cout << col <<  " " << row << std::endl;
+            }
+        }
+    }
+
+        std::cout << "nb liaison : " << links.size() << std::endl;
+        std::cout << "nb masses : " << masses.size() << std::endl;
 
     for(auto& m: masses)
         modeleur.addMasse(m);
@@ -142,7 +248,7 @@ int main(void)
         renderer.addMasse(m);
 
     modeleur.addMacroForce(ForceConstantePtr(new ForceConstante(glm::vec3(0,G,0))));
-    modeleur.addMacroForce(VentPtr(new Vent(glm::vec3(0,0,-5))));
+    modeleur.addMacroForce(VentPtr(new Vent(glm::vec3(18,1,2))));
 
     std::thread physicThread([&modeleur, &done]() {
 
