@@ -21,7 +21,7 @@ include_directories(${SDL_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIR}
 add_subdirectory(PartyKel)
 add_subdirectory(third-party/AntTweakBar)
 
-set(ALL_LIBRARIES PartyKel AntTweakBar ${SDL_LIBRARY} ${OPENGL_LIBRARIES} ${GLEW_LIBRARY})
+set(ALL_LIBRARIES PartyKel AntTweakBar ${SDL_LIBRARY} ${OPENGL_LIBRARIES} ${GLEW_LIBRARY} SDL_image)
 
 file(GLOB_RECURSE SRC_FILES src/*.cpp)
 

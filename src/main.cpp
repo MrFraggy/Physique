@@ -14,6 +14,9 @@
 #include <physic/forces/vent.h>
 #include <physic/masses/libre.h>
 #include <physic/masses/fixe.h>
+#include "flag.hpp"
+#include <graphic/shader.h>
+#include <graphic/material.h>
 
 #include <vector>
 #include <thread>
@@ -43,7 +46,6 @@ public:
 		std::vector<glm::vec3> p;
 		std::vector<float> m;
 		std::vector<glm::vec3> c;
-
 		for(auto& ma: masses)
 		{
 			p.push_back(ma->getPosition());
@@ -72,25 +74,12 @@ protected:
 	std::vector<LinkPtr> links;
 };
 
-inline LinkPtr getRessortFrein(Masse* m1, Masse* m2)
-{
-    LinkPtr l(new Link(m1, m2));
-    l->addComponent(FreinPtr(new Frein()));
-    l->addComponent(RessortPtr(new Ressort()));
-    return l;
-} 
-
 int main(void)
 {
     WindowManager wm(WINDOW_WIDTH, WINDOW_HEIGHT, "Newton was a Geek");
     wm.setFramerate(30);
-
     std::srand(std::time(0));
-    // Création des particules
-   /* StaticParticleManager particleManager;
-    particleManager.addParticle(glm::vec3(0), 1, glm::vec3(1, 1, 1));
-    particleManager.addCircleParticles(0.5f, 128);
-*/
+
     //Renderer3D renderer;
     //
 
@@ -144,7 +133,7 @@ int main(void)
     const int height = 25;
     const int width = 25;
     
-    std::vector<MassePtr> masses;
+    /*std::vector<MassePtr> masses;
     
     for (int row = 0; row < height; ++row)
     {
@@ -157,85 +146,13 @@ int main(void)
         {
             masses.push_back(MassePtr(new MasseLibre(glm::vec3(((-width/2) + col) * 0.1f, ((height / 2) - row)* 0.1f, 0), 1.f)));
         }
-    }
-
-    std::vector<LinkPtr> links;
-/*
-    for(int col = 0; col < width-1; ++col)
-    {
-        for (int row = 0; row < height; ++row)
-        {
-            uint index = col*height+row, index2 = (col+1)*height+row;
-            links.push_back(getRessortFrein(masses.at(index).get(), masses.at(index2).get())); // droite
-            std::cout << "link: " << (col) << "," << row << " to " << (col+1) << "," << row << std::endl;
-        }
-    }
-
-    for(int col = 0; col < width; ++col)
-    {
-        for (int row = 0; row < height-1; ++row)
-        {
-            int index = col*height+row, index2 = col*height+row+1;
-            links.push_back(getRessortFrein(masses.at(index).get(), masses.at(index2).get())); // droite
-            std::cout << "link: " << (col) << "," << row << " to " << (col) << "," << row+1 << std::endl;
-        }
-    }
-
-    for(int col = 1; col < width-1; ++col)
-    {
-        for (int row = 0; row < height-1; ++row)
-        {
-            int index = col*height+row, index2 = (col+1)*height+(row+1);
-            links.push_back(getRessortFrein(masses.at(index).get(), masses.at(index2).get())); // droite
-            std::cout << "link: " << (col) << "," << row << " to " << (col+1) << "," << row+1 << std::endl;
-        }
-    }
-
-    for(int col = 1; col < width-1; ++col)
-    {
-        for (int row = 1; row < height; ++row)
-        {
-            int index = col*height+row, index2 = (col+1)*height+(row-1);
-            links.push_back(getRessortFrein(masses.at(index).get(), masses.at(index2).get())); // droite
-            std::cout << "link: " << (col) << "," << row << " to " << (col+1) << "," << row-1 << std::endl;
-        }
     }*/
-    for(int col = 0; col < 1; ++col)
-    {
-        for (int row = 0; row < height; ++row)
-        {
-            uint index = col*height+row, index2 = (col+1)*height+row;
-            links.push_back(getRessortFrein(masses.at(index).get(), masses.at(index2).get())); // droite
-            std::cout << "link: " << (col) << "," << row << " to " << (col+1) << "," << row << std::endl;
-        }
-    }
-    for(int col = 1; col < width; ++col)
-    {
-        for (int row = 0; row < height; ++row)
-        {
-            uint index = col*height+row;
-            try {
-            if((col+1) < width)
-                links.push_back(getRessortFrein(masses.at(index).get(), masses.at((col+1)*height+row).get())); // droite
-            if((row+1) < height)
-                links.push_back(getRessortFrein(masses.at(index).get(), masses.at(col*height+(row+1)).get())); // bas
-            if((col+1) < width && (row+1) < height)
-                links.push_back(getRessortFrein(masses.at(index).get(), masses.at((col+1)*height+(row+1)).get())); // bas droite
-            if((col+1) < width && (row-1) >= 0)
-                links.push_back(getRessortFrein(masses.at(index).get(), masses.at((col+1)*height+(row-1)).get())); // haut droite
-            if((col+2) < width)
-                links.push_back(getRessortFrein(masses.at(index).get(), masses.at((col+2)*height+row).get())); // droite éloigné
-            if((row+2) < height)
-                links.push_back(getRessortFrein(masses.at(index).get(), masses.at(col*height+(row+2)).get())); // bas éloigné
-            } catch(std::exception& e)
-            {
-                std::cout << col <<  " " << row << std::endl;
-            }
-        }
-    }
+    Flag flag(25,25);
+    auto masses = flag.getMasses();
+    auto links = flag.getLinks();
 
-        std::cout << "nb liaison : " << links.size() << std::endl;
-        std::cout << "nb masses : " << masses.size() << std::endl;
+    std::cout << "nb liaison : " << links.size() << std::endl;
+    std::cout << "nb masses : " << masses.size() << std::endl;
 
     for(auto& m: masses)
         modeleur.addMasse(m);
@@ -248,33 +165,54 @@ int main(void)
         renderer.addMasse(m);
 
     modeleur.addMacroForce(ForceConstantePtr(new ForceConstante(glm::vec3(0,G,0))));
-    modeleur.addMacroForce(VentPtr(new Vent(glm::vec3(18,1,2))));
+    modeleur.addMacroForce(VentPtr(new Vent(glm::vec3(20,1,1))));
+
+    glm::mat4 proj = glm::perspective(70.f, WINDOW_WIDTH*1.f/WINDOW_HEIGHT, 0.1f, 100.f);
+    Shader shader;
+    shader.loadFromFile("../shaders/basic.vert", ShaderType_Vertex);
+    shader.loadFromFile("../shaders/basic.frag", ShaderType_Fragment);
+    shader.compile();
+
+    Material texture;
+    texture.loadFromFile("../images/pinup.jpg");
+
+    glClearColor(0.1,0.1,0.1,0);
+    int mode = 2;
 
     std::thread physicThread([&modeleur, &done]() {
 
-    	Uint32 lastTime = SDL_GetTicks();
+        Uint32 lastTime = SDL_GetTicks();
 
-    	const uint32_t FrameDuration = 1000.f * dt;
-    	while(!done) {
-    		modeleur.update();
+        const uint32_t FrameDuration = 1000.f * dt;
+        while(!done) {
+            modeleur.update();
 
-		    Uint32 d = SDL_GetTicks() - lastTime;
-		    if(d < dt) {
-		        SDL_Delay(FrameDuration - d);
-		    }
-		    lastTime = SDL_GetTicks();
-    	}
+            Uint32 d = SDL_GetTicks() - lastTime;
+            if(d < dt) {
+                SDL_Delay(FrameDuration - d);
+            }
+            lastTime = SDL_GetTicks();
+        }
     });
 
     while(!done) {
         wm.startMainLoop();
 
         // Rendu
-        renderer.setViewMatrix(camera.getViewMatrix());
+        glm::mat4 view = camera.getViewMatrix();
+        renderer.setViewMatrix(view);
         renderer.clear();
         renderer.render();
-
         
+        glEnable(GL_TEXTURE_2D);
+        shader.bind();
+        texture.bind();
+        glm::mat4 mvp = proj*view;
+        shader.send(Uniform_Matrix4f, "mvpMatrix", glm::value_ptr(mvp));
+        flag.draw();
+        texture.unbind();
+        shader.unbind();
+        glDisable(GL_TEXTURE_2D);
         //particleManager.drawParticles(renderer);
 
         // Simulation
@@ -292,7 +230,11 @@ int main(void)
                 case SDL_KEYDOWN:
                     if(e.key.keysym.sym == SDLK_SPACE) {
                         wireframe = !wireframe;
+                    } else if(e.key.keysym.sym == SDLK_m) {
+                        mode = (mode+1)%3;
+                        flag.setDrawMode(static_cast<DrawMode>(mode));
                     }
+                    break;
                 case SDL_MOUSEBUTTONDOWN:
                     if(e.button.button == SDL_BUTTON_WHEELUP) {
                         camera.moveFront(0.1f);
@@ -313,7 +255,7 @@ int main(void)
             mouseLastX = mouseX;
             mouseLastY = mouseY;
         }
-
+        flag.update();
         // Mise à jour de la fenêtre
         elapsed = wm.update();
 	}

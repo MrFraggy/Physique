@@ -29,6 +29,9 @@ protected:
 
 typedef std::shared_ptr<Link> LinkPtr;
 
+
+LinkPtr getRessortFrein(Masse* m1, Masse* m2);
+
 /*
 class RessortFreinLink : public Link
 {

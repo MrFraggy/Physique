@@ -108,7 +108,7 @@ void Renderer3D::drawParticles(uint32_t count,
 
     glBindVertexArray(0);
 }
-
+/*
 void Renderer3D::drawSquare(uint32_t count,
                    const glm::vec3* positionArray,
                    uint32_t indicesCount,
@@ -124,5 +124,5 @@ void Renderer3D::drawSquare(uint32_t count,
     
     glDrawElements(GL_TRIANGLES, indicesArray, GL_UNSIGNED_INT, (void*)0);
 }
-
+*/
 }
