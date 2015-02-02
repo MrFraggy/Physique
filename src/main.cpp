@@ -178,7 +178,7 @@ int main(void)
 
     glClearColor(0.1,0.1,0.1,0);
     int mode = 2;
-
+    bool debug = false;
     std::thread physicThread([&modeleur, &done]() {
 
         Uint32 lastTime = SDL_GetTicks();
@@ -202,7 +202,8 @@ int main(void)
         glm::mat4 view = camera.getViewMatrix();
         renderer.setViewMatrix(view);
         renderer.clear();
-        renderer.render();
+        if(debug)
+            renderer.render();
         
         glEnable(GL_TEXTURE_2D);
         shader.bind();
@@ -233,7 +234,8 @@ int main(void)
                     } else if(e.key.keysym.sym == SDLK_m) {
                         mode = (mode+1)%3;
                         flag.setDrawMode(static_cast<DrawMode>(mode));
-                    }
+                    } else if(e.key.keysym.sym == SDLK_p)
+                        debug = !debug;
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                     if(e.button.button == SDL_BUTTON_WHEELUP) {
