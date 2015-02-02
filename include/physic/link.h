@@ -14,10 +14,15 @@ class Link
 {
 public:
 	Link(Masse* m1, Masse* m2);
+	~Link();
 
 	void update();
 
 	void addComponent(const std::shared_ptr<Force>& f);
+
+	bool hasComponent(ForceIdentifier id);
+
+	bool hasMass(Masse* m);
 
 protected:
 	Masse* masses[2];
@@ -30,7 +35,7 @@ protected:
 typedef std::shared_ptr<Link> LinkPtr;
 
 
-LinkPtr getRessortFrein(Masse* m1, Masse* m2);
+LinkPtr createRessortFrein(Masse* m1, Masse* m2);
 
 /*
 class RessortFreinLink : public Link

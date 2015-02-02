@@ -2,7 +2,7 @@
 
 
 ForceConstante::ForceConstante(const glm::vec3& force) :
-force(force)
+Force(ForceIdentifier::Constante), force(force)
 {
 
 }

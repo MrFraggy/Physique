@@ -1,7 +1,7 @@
 #include <physic/forces/ressort.h>
 
 Ressort::Ressort(float raideur) : 
-	raideur(raideur) 
+	Force(ForceIdentifier::Ressort), raideur(raideur) 
 {}
 
 void Ressort::onUpdate(Masse* m1, Masse* m2)

@@ -1,7 +1,7 @@
 #include <physic/forces/frein.h>
 
 Frein::Frein(float viscosite) : 
-	viscosite(viscosite)
+	Force(ForceIdentifier::Frein), viscosite(viscosite)
 {}
 
 void Frein::onUpdate(Masse* m1, Masse* m2)

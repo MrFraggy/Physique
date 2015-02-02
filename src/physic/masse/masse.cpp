@@ -1,4 +1,5 @@
 #include <physic/masses/masse.h>
+#include <algorithm>
 
 Masse::Masse(const glm::vec3& pos, float masse, const glm::vec3& c) : 
 	pos(pos), 
@@ -37,4 +38,21 @@ float Masse::getMasse()
 glm::vec3 Masse::getColor()
 {
 	return color;
+}
+
+void Masse::addLink(Link* l)
+{
+	links.push_back(l);
+}
+
+void Masse::removeLink(Link* l)
+{
+	auto it = std::find(links.begin(), links.end(), l);
+	if(it != links.end())
+		links.erase(it);
+}
+
+const std::vector<Link*>& Masse::getLinks()
+{
+	return links;
 }

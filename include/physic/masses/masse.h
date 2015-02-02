@@ -6,7 +6,9 @@
 #include <glm/glm.hpp>
 #include <physic/constants.h>
 #include <memory>
+#include <vector>
 
+class Link;
 class Masse
 {
 public:
@@ -20,11 +22,17 @@ public:
 	float getMasse();
 	glm::vec3 getColor();
 
+	void addLink(Link* l);
+	void removeLink(Link* l);
+	const std::vector<Link*>& getLinks();
+
 protected:
 	virtual void onUpdate() = 0;
 
 	glm::vec3 pos, vit, frc, color;
 	float masse, rayon;
+
+	std::vector<Link*> links;
 };
 
 typedef std::shared_ptr<Masse> MassePtr;

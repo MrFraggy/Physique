@@ -35,7 +35,7 @@ Flag::Flag(int w, int h) : m_width(w), m_height(h) {
         for (int row = 0; row < m_height; ++row)
         {
             uint index = col*m_height+row, index2 = (col+1)*m_height+row;
-            m_links.push_back(getRessortFrein(m_masses.at(index).get(), m_masses.at(index2).get())); // droite
+            m_links.push_back(createRessortFrein(m_masses.at(index).get(), m_masses.at(index2).get())); // droite
             //std::cout << "link: " << (col) << "," << row << " to " << (col+1) << "," << row << std::endl;
         }
     }
@@ -46,17 +46,17 @@ Flag::Flag(int w, int h) : m_width(w), m_height(h) {
             uint index = col*m_height+row;
             try {
             if((col+1) < m_width)
-                m_links.push_back(getRessortFrein(m_masses.at(index).get(), m_masses.at((col+1)*m_height+row).get())); // droite
+                m_links.push_back(createRessortFrein(m_masses.at(index).get(), m_masses.at((col+1)*m_height+row).get())); // droite
             if((row+1) < m_height)
-                m_links.push_back(getRessortFrein(m_masses.at(index).get(), m_masses.at(col*m_height+(row+1)).get())); // bas
+                m_links.push_back(createRessortFrein(m_masses.at(index).get(), m_masses.at(col*m_height+(row+1)).get())); // bas
             if((col+1) < m_width && (row+1) < m_height)
-                m_links.push_back(getRessortFrein(m_masses.at(index).get(), m_masses.at((col+1)*m_height+(row+1)).get())); // bas droite
+                m_links.push_back(createRessortFrein(m_masses.at(index).get(), m_masses.at((col+1)*m_height+(row+1)).get())); // bas droite
             if((col+1) < m_width && (row-1) >= 0)
-                m_links.push_back(getRessortFrein(m_masses.at(index).get(), m_masses.at((col+1)*m_height+(row-1)).get())); // haut droite
+                m_links.push_back(createRessortFrein(m_masses.at(index).get(), m_masses.at((col+1)*m_height+(row-1)).get())); // haut droite
             if((col+2) < m_width)
-                m_links.push_back(getRessortFrein(m_masses.at(index).get(), m_masses.at((col+2)*m_height+row).get())); // droite éloigné
+                m_links.push_back(createRessortFrein(m_masses.at(index).get(), m_masses.at((col+2)*m_height+row).get())); // droite éloigné
             if((row+2) < m_height)
-                m_links.push_back(getRessortFrein(m_masses.at(index).get(), m_masses.at(col*m_height+(row+2)).get())); // bas éloigné
+                m_links.push_back(createRessortFrein(m_masses.at(index).get(), m_masses.at(col*m_height+(row+2)).get())); // bas éloigné
             } catch(std::exception& e)
             {
             }

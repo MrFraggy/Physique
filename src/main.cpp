@@ -14,12 +14,14 @@
 #include <physic/forces/vent.h>
 #include <physic/masses/libre.h>
 #include <physic/masses/fixe.h>
+#include <utility/clock.hpp>
 #include "flag.hpp"
 #include <graphic/shader.h>
 #include <graphic/material.h>
 
 #include <vector>
 #include <thread>
+#include <sstream>
 #include <ctime>
 
 static const Uint32 WINDOW_WIDTH = 1024;
@@ -165,7 +167,7 @@ int main(void)
         renderer.addMasse(m);
 
     modeleur.addMacroForce(ForceConstantePtr(new ForceConstante(glm::vec3(0,G,0))));
-    modeleur.addMacroForce(VentPtr(new Vent(glm::vec3(20,1,1))));
+    //modeleur.addMacroForce(VentPtr(new Vent(glm::vec3(20,1,1))));
 
     glm::mat4 proj = glm::perspective(70.f, WINDOW_WIDTH*1.f/WINDOW_HEIGHT, 0.1f, 100.f);
     Shader shader;
@@ -176,22 +178,26 @@ int main(void)
     Material texture;
     texture.loadFromFile("../images/pinup.jpg");
 
+    Clock fpsClock;
+
     glClearColor(0.1,0.1,0.1,0);
     int mode = 2;
-    bool debug = false;
-    std::thread physicThread([&modeleur, &done]() {
+    int fps = 0, pps = 0;
+    bool debug = false, simulate = false;
 
+    std::thread physicThread([&modeleur, &done, &pps, &simulate]() {
         Uint32 lastTime = SDL_GetTicks();
-
         const uint32_t FrameDuration = 1000.f * dt;
         while(!done) {
-            modeleur.update();
+            if(simulate)
+                modeleur.update();
 
             Uint32 d = SDL_GetTicks() - lastTime;
             if(d < dt) {
                 SDL_Delay(FrameDuration - d);
             }
             lastTime = SDL_GetTicks();
+            ++pps;
         }
     });
 
@@ -236,6 +242,8 @@ int main(void)
                         flag.setDrawMode(static_cast<DrawMode>(mode));
                     } else if(e.key.keysym.sym == SDLK_p)
                         debug = !debug;
+                    else if(e.key.keysym.sym == SDLK_o)
+                        simulate = !simulate;
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                     if(e.button.button == SDL_BUTTON_WHEELUP) {
@@ -258,8 +266,19 @@ int main(void)
             mouseLastY = mouseY;
         }
         flag.update();
+
+        if(fpsClock.GetSeconds() > 1)
+        {
+            std::ostringstream oss;
+            oss << "Flag - FPS: " << fps << " - PPS: " << pps;
+            fps = 0; pps = 0;
+            SDL_WM_SetCaption(oss.str().c_str(), 0);
+            fpsClock.Restart();
+        }
+        ++fps;
         // Mise à jour de la fenêtre
         elapsed = wm.update();
+
 	}
 
 	physicThread.join();

@@ -3,7 +3,7 @@
 #include <iostream>
 
 Vent::Vent(const glm::vec3& dir) :
-direction(dir)
+	Force(ForceIdentifier::Vent), direction(dir)
 {
 
 }
