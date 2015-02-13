@@ -18,6 +18,7 @@
 #include "flag.hpp"
 #include <graphic/shader.h>
 #include <graphic/material.h>
+#include <physic/masses/masses.h>
 
 #include <vector>
 #include <thread>
@@ -79,7 +80,7 @@ protected:
 int main(void)
 {
     WindowManager wm(WINDOW_WIDTH, WINDOW_HEIGHT, "Newton was a Geek");
-    wm.setFramerate(30);
+    wm.setFramerate(99999);
     std::srand(std::time(0));
 
     //Renderer3D renderer;

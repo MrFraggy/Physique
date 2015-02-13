@@ -24,6 +24,8 @@ public:
                        const glm::vec3* colorArray,
                        float massScale = 0.05);
 
+    void drawLines(uint32_t count, const glm::vec3* linesArray);
+
     void setProjMatrix(const glm::mat4& P) {
         m_ProjMatrix = P;
     }

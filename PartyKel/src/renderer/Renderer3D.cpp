@@ -108,6 +108,11 @@ void Renderer3D::drawParticles(uint32_t count,
 
     glBindVertexArray(0);
 }
+
+void Renderer3D::drawLines(uint32_t count, const glm::vec3* linesArray)
+{
+    
+}
 /*
 void Renderer3D::drawSquare(uint32_t count,
                    const glm::vec3* positionArray,

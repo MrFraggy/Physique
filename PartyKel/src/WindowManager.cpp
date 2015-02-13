@@ -33,9 +33,9 @@ float WindowManager::update() {
 
     Uint32 currentTime = SDL_GetTicks();
     Uint32 d = currentTime - m_nStartTime;
-    if(d < m_nFrameDuration) {
-        SDL_Delay(m_nFrameDuration - d);
-    }
+    //if(d < m_nFrameDuration) {
+    //    SDL_Delay(m_nFrameDuration - d);
+    //}
     return 0.01f * (SDL_GetTicks() - m_nStartTime);
 }
 
