@@ -6,12 +6,13 @@
 Flag::Flag(int w, int h) : m_width(w), m_height(h) {
 
 	VertexBuffer buffer;
-
+    //auto& masses = Masses::get();
     for (int row = 0; row < m_height; ++row)
     {
     	auto pos = glm::vec3(-m_width/2 * 0.1f, ((m_height / 2) - row) * 0.1f, 0);
 		buffer.addVertex({pos, glm::vec3(0,0,0), glm::vec2(0,row*1.f/m_height), glm::vec4(1,1,1,1)});
-    	m_masses.push_back(MassePtr(new MasseFixe(pos)));
+    	//masses.create();
+        m_masses.push_back(MassePtr(new MasseFixe(pos)));
     }
 	for(int col = 1; col<m_width; ++col)
 		for(int row = 0; row<m_height; ++row)

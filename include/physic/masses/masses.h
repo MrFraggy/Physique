@@ -7,6 +7,8 @@ typedef std::function<void(bool, glm::vec3&, glm::vec3&, glm::vec3&)> MassUpdate
 
 class Masses {
 public:
+	static Masses& get();
+
 	int create(const glm::vec3& pos, float mass, bool fix = false, float rad = 1.f, const glm::vec3& color = glm::vec3(0,1,0))
 	{
 		int id = positions.size();
@@ -27,6 +29,14 @@ public:
 	}
 
 	void setUpdateFunction(MassUpdateFunction u) { updateFunc = u; }
+
+	std::vector<glm::vec3>& getPositions() { return positions; }
+	std::vector<glm::vec3>& getVelocities() { return velocities; }
+	std::vector<glm::vec3>& getForces() { return forces; }
+	std::vector<glm::vec3>& getColors() { return colors; }
+	std::vector<float>& getMasses() { return masses; }
+	std::vector<float>& getRadius() { return radius; }
+	std::vector<bool>& getFixedStates() { return fixed; }
 
 protected:
 	std::vector<glm::vec3> positions;

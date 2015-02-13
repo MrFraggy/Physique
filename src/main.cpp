@@ -46,20 +46,10 @@ public:
 
 	void render()
 	{
-		std::vector<glm::vec3> p;
-		std::vector<float> m;
-		std::vector<glm::vec3> c;
-		for(auto& ma: masses)
-		{
-			p.push_back(ma->getPosition());
-			m.push_back(ma->getMasse());
-			c.push_back(ma->getColor());
-		}
-
-		renderer.drawParticles(p.size(), 
-								p.data(),
-								m.data(),
-								c.data());
+		renderer.drawParticles(positions.size(), 
+								positions.data(),
+								radius.data(),
+								colors.data());
 	}
 
 	void setViewMatrix(const glm::mat4& m)
@@ -67,14 +57,24 @@ public:
 		renderer.setViewMatrix(m);
 	}
 
-	void addMasse(const MassePtr& ptr)
+	void add(const glm::vec3& pos, float rad, const glm::vec3& color)
 	{
-		masses.push_back(ptr);
+		positions.push_back(pos);
+        radius.push_back(rad);
+        colors.push_back(color);
 	}
+
+    void addAll(const std::vector<glm::vec3> & pos, const std::vector<float>& rad, const std::vector<glm::vec3>& color)
+    {
+        positions.insert(positions.end(), pos.begin(), pos.end());
+        radius.insert(radius.end(), rad.begin(), rad.end());
+        colors.insert(colors.end(), color.begin(), color.end());
+    }
 protected:
 	Renderer3D renderer;
-	std::vector<MassePtr> masses;
-	std::vector<LinkPtr> links;
+	std::vector<glm::vec3> positions;
+    std::vector<float> radius;
+    std::vector<glm::vec3> colors;
 };
 
 int main(void)
@@ -100,56 +100,41 @@ int main(void)
     /////////////////////////////////////
     //  Pont / Ficelle 
     /////////////////////////////////////
-    /*
-    std::vector<MassePtr> masses;
-    masses.push_back(MassePtr(new MasseFixe(glm::vec3(-2.5,0,0))));
-    masses.push_back(MassePtr(new MasseLibre(glm::vec3(-2,0,0), 1.f)));
-    masses.push_back(MassePtr(new MasseLibre(glm::vec3(-1.5,0,0), 1.f)));
-    masses.push_back(MassePtr(new MasseLibre(glm::vec3(-1,0,0), 1.f)));
-    masses.push_back(MassePtr(new MasseLibre(glm::vec3(-0.5,0,0), 1.f)));
-    masses.push_back(MassePtr(new MasseLibre(glm::vec3(0,0,0), 1.f)));
-    masses.push_back(MassePtr(new MasseLibre(glm::vec3(0.5,0,0), 1.f)));
-    masses.push_back(MassePtr(new MasseLibre(glm::vec3(1.0,0,0), 1.f)));
-    masses.push_back(MassePtr(new MasseLibre(glm::vec3(1.5,0,0), 1.f)));
-    masses.push_back(MassePtr(new MasseLibre(glm::vec3(2,0,0), 1.f)));
-    masses.push_back(MassePtr(new MasseLibre(glm::vec3(2.5,0,0), 1.f)));
-    masses.push_back(MassePtr(new MasseFixe(glm::vec3(3,0,0))));
+    //*
+    Masses& masses = modeleur.getMasses();
+    masses.create(glm::vec3(-2.5,0,0), 1.f, true);
+    masses.create(glm::vec3(-2.0,0,0), 1.f, false);
+    masses.create(glm::vec3(-1.5,0,0), 1.f, false);
+    masses.create(glm::vec3(-1.0,0,0), 1.f, false);
+    masses.create(glm::vec3(-0.5,0,0), 1.f, false);
+    masses.create(glm::vec3(-0.0,0,0), 1.f, false);
+    masses.create(glm::vec3( 0.5,0,0), 1.f, false);
+    masses.create(glm::vec3( 1.0,0,0), 1.f, false);
+    masses.create(glm::vec3( 1.5,0,0), 1.f, false);
+    masses.create(glm::vec3( 2.0,0,0), 1.f, false);
+    masses.create(glm::vec3( 2.5,0,0), 1.f, true);
 
-    std::vector<LinkPtr> links;
-    links.push_back(getRessortFrein(masses.at(0).get(), masses.at(1).get()));
-    links.push_back(getRessortFrein(masses.at(1).get(), masses.at(2).get()));
-    links.push_back(getRessortFrein(masses.at(2).get(), masses.at(3).get()));
-    links.push_back(getRessortFrein(masses.at(3).get(), masses.at(4).get()));
-    links.push_back(getRessortFrein(masses.at(4).get(), masses.at(5).get()));
-    links.push_back(getRessortFrein(masses.at(5).get(), masses.at(6).get()));
-    links.push_back(getRessortFrein(masses.at(6).get(), masses.at(7).get()));
-    links.push_back(getRessortFrein(masses.at(7).get(), masses.at(8).get()));
-    links.push_back(getRessortFrein(masses.at(8).get(), masses.at(9).get()));
-    links.push_back(getRessortFrein(masses.at(9).get(), masses.at(10).get()));
-    links.push_back(getRessortFrein(masses.at(10).get(), masses.at(11).get()));
-    */
+    SpringBreaks& springbreaks = modeleur.getSpringBreaks();
+    springbreaks.create(0,1,0.5f);
+    springbreaks.create(1,2,0.5f);
+    springbreaks.create(2,3,0.5f);
+    springbreaks.create(3,4,0.5f);
+    springbreaks.create(4,5,0.5f);
+    springbreaks.create(5,6,0.5f);
+    springbreaks.create(6,7,0.5f);
+    springbreaks.create(7,8,0.5f);
+    springbreaks.create(8,9,0.5f);
+    springbreaks.create(9,10,0.5f);
+   
+    //*/
 
     //////////////////////////////////////
     //  Drapeau
     //////////////////////////////////////
-
+    /*
     const int height = 25;
     const int width = 25;
-    
-    /*std::vector<MassePtr> masses;
-    
-    for (int row = 0; row < height; ++row)
-    {
-        masses.push_back(MassePtr(new MasseFixe(glm::vec3(-width/2 * 0.1f, ((height / 2) - row) * 0.1f, 0))));
-    }
 
-    for(int col = 1; col < width; ++col)
-    {
-        for (int row = 0; row < height; ++row)
-        {
-            masses.push_back(MassePtr(new MasseLibre(glm::vec3(((-width/2) + col) * 0.1f, ((height / 2) - row)* 0.1f, 0), 1.f)));
-        }
-    }*/
     Flag flag(25,25);
     auto masses = flag.getMasses();
     auto links = flag.getLinks();
@@ -162,12 +147,11 @@ int main(void)
 
     for(auto& l: links)
         modeleur.addLink(l);
-
+    //*/
     CRenderer renderer;
-    for(auto& m: masses)
-        renderer.addMasse(m);
+    renderer.addAll(masses.getPositions(), masses.getRadius(), masses.getColors());
 
-    modeleur.addMacroForce(ForceConstantePtr(new ForceConstante(glm::vec3(0,G,0))));
+    //modeleur.addMacroForce(ForceConstantePtr(new ForceConstante(glm::vec3(0,G,0))));
     //modeleur.addMacroForce(VentPtr(new Vent(glm::vec3(20,1,1))));
 
     glm::mat4 proj = glm::perspective(70.f, WINDOW_WIDTH*1.f/WINDOW_HEIGHT, 0.1f, 100.f);
@@ -209,9 +193,10 @@ int main(void)
         glm::mat4 view = camera.getViewMatrix();
         renderer.setViewMatrix(view);
         renderer.clear();
-        if(debug)
+        //if(debug)
             renderer.render();
         
+        /*
         glEnable(GL_TEXTURE_2D);
         shader.bind();
         texture.bind();
@@ -221,6 +206,7 @@ int main(void)
         texture.unbind();
         shader.unbind();
         glDisable(GL_TEXTURE_2D);
+        */
         //particleManager.drawParticles(renderer);
 
         // Simulation
@@ -240,7 +226,7 @@ int main(void)
                         wireframe = !wireframe;
                     } else if(e.key.keysym.sym == SDLK_m) {
                         mode = (mode+1)%3;
-                        flag.setDrawMode(static_cast<DrawMode>(mode));
+                        //flag.setDrawMode(static_cast<DrawMode>(mode));
                     } else if(e.key.keysym.sym == SDLK_p)
                         debug = !debug;
                     else if(e.key.keysym.sym == SDLK_o)
@@ -266,7 +252,7 @@ int main(void)
             mouseLastX = mouseX;
             mouseLastY = mouseY;
         }
-        flag.update();
+        //flag.update();
 
         if(fpsClock.GetSeconds() > 1)
         {
