@@ -1,24 +1,22 @@
 #include <physic/modeleur.h>
 #include <iostream>
 
-Modeleur::Modeleur() : springBreaks(masses)
+Modeleur::Modeleur() : springBreaks(masses), constantForces(masses)
 {
-	masses.setUpdateFunc([](bool fxd, glm::vec3& frc, glm::vec3& vel, glm::vec3& frc) -> void{
+	masses.setUpdateFunction([](bool fxd, glm::vec3& pos, glm::vec3& vel, glm::vec3& frc, float mass) -> void{
 		if(!fxd)
 		{
-			frc = glm::vec3(0,0,0);
+			vel += frc*dt/mass;
+			pos += vel*dt;
 		}
-		else 
-		{
-			vit += frc*dt/masse;
-			pos += vit*dt;
-			frc = glm::vec3(0,0,0);
-		}
+		frc = glm::vec3(0,0,0);
 	});
 }
 
 void Modeleur::update()
 {
+	springBreaks.update();
+	constantForces.update();
 	masses.update();
 }
 
@@ -30,4 +28,14 @@ int Modeleur::addMass(const glm::vec3& pos, float mass, bool fix, float radius, 
 Masses& Modeleur::getMasses()
 {
 	return masses;
+}
+
+SpringBreaks& Modeleur::getSpringBreaks()
+{
+	return springBreaks;
+}
+
+ConstantForces& Modeleur::getConstantForces()
+{
+	return constantForces;
 }

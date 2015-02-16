@@ -1,6 +1,8 @@
 #pragma once
 
 #include <physic/masses/masses.h>
+#include <PartyKel/glm.hpp>
+#include <iostream>
 
 class SpringBreaks {
 public:
@@ -18,7 +20,7 @@ public:
 	}
 
 	void update() {
-		const float raideur = 10000;
+		const float raideur = 100;
 		auto& forces = masses.getForces();
 		auto& velocities = masses.getVelocities();
 		auto& positions = masses.getPositions();
@@ -31,13 +33,17 @@ public:
 			// Apply spring force
 			glm::vec3 dir = positions[id1]-positions[id2];
 			float dist = glm::length(dir);
-
-			if(dist > 0.001f)
-			{
-				float forceRessort = -raideur*(1-(baseLengths[i]/dist));
-				forcesAccumulatorM1 += dir*forceRessort;
-				forcesAccumulatorM2 -= dir*forceRessort;
-			}
+			float forceRessort = -raideur*(1-(baseLengths[i]/std::max(0.001f, dist)));
+			
+			std::cout << id1 << " " << id2 << std::endl 
+					<< baseLengths[i] << std::endl
+					<< dist << std::endl
+					<< forceRessort << std::endl
+					<< positions[id2] << std::endl 
+					<< positions[id1] << std::endl << std::endl;
+			//std::getchar();
+			forcesAccumulatorM1 += dir*forceRessort;
+			forcesAccumulatorM2 += -dir*forceRessort;
 
 			// Apply Brake force
 			glm::vec3 forceFrein = (velocities[id1] - velocities[id2]) * (viscosities[i]/Fe);
@@ -48,6 +54,7 @@ public:
 			// Operations atomique
 			forces[id1] -= forcesAccumulatorM1;
 			forces[id2] += forcesAccumulatorM2;
+			//std::cout << forcesAccumulatorM1 << std::endl;
 		}
 	}
 

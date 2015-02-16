@@ -2,8 +2,9 @@
 
 #include <functional>
 #include <vector>
+#include <iostream>
 
-typedef std::function<void(bool, glm::vec3&, glm::vec3&, glm::vec3&)> MassUpdateFunction;
+typedef std::function<void(bool, glm::vec3&, glm::vec3&, glm::vec3&, float)> MassUpdateFunction;
 
 class Masses {
 public:
@@ -25,7 +26,7 @@ public:
 	void update() 
 	{
 		for(unsigned int i = 0; i<positions.size(); ++i)
-			updateFunc(fixed[i], positions[i], velocities[i], forces[i]);
+			updateFunc(fixed[i], positions[i], velocities[i], forces[i], masses[i]);
 	}
 
 	void setUpdateFunction(MassUpdateFunction u) { updateFunc = u; }
