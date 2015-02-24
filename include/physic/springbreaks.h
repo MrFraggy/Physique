@@ -19,6 +19,19 @@ public:
 		return id;
 	}
 
+	bool remove(int id)
+	{
+		if(id < 0 || id >= baseLengths.size() || !areRemovable[id])
+			return false;
+		
+		massesIds.erase(massesIds.begin()+id);
+		massesIds.erase(massesIds.begin()+id);
+		baseLengths.erase(baseLengths.begin()+id);
+		viscosities.erase(viscosities.begin()+id);
+		areRemovable.erase(areRemovable.begin()+id);
+		return true;
+	}
+
 	void update() {
 		const float raideur = 10000;
 		auto& forces = masses.getForces();
@@ -51,6 +64,8 @@ public:
 		}
 	}
 
+	std::vector<int>& getMassesIds() { return massesIds; }
+	std::vector<bool>& getAreRemovables() { return areRemovable; }
 
 protected:
 	Masses& masses;

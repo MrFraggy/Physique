@@ -172,9 +172,10 @@ int main(void)
     int mode = 2;
     int fps = 0, pps = 0;
     bool debug = false, simulate = false;
+    uint32_t idleTime = 0;
 
-    std::thread physicThread([&modeleur, &done, &pps, &simulate]() {
-        const uint32_t FrameDuration = 2000.f * dt;
+    std::thread physicThread([&modeleur, &done, &pps, &simulate, &idleTime]() {
+        const uint32_t FrameDuration = 1000.f * dt;
         Clock clock;
         while(!done) {
             if(simulate)
@@ -186,6 +187,7 @@ int main(void)
             uint32_t elapsed = clock.GetMilliseconds();
             if(elapsed < FrameDuration) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(FrameDuration-elapsed));
+                idleTime += (FrameDuration-elapsed);
             }
             clock.Restart();
         }
@@ -260,11 +262,11 @@ int main(void)
         }
         //flag.update();
 
-        if(fpsClock.GetSeconds() > 1)
+        if(fpsClock.GetSeconds() >= 1)
         {
             std::ostringstream oss;
-            oss << "Flag - FPS: " << fps << " - PPS: " << pps;
-            fps = 0; pps = 0;
+            oss << "Flag - FPS: " << fps << " - PPS: " << pps << " Idle: " << idleTime << "ms";
+            fps = 0; pps = 0; idleTime = 0;
             SDL_WM_SetCaption(oss.str().c_str(), 0);
             fpsClock.Restart();
         }

@@ -17,7 +17,7 @@ Flag::Flag(int w, int h, Masses& masses, SpringBreaks& spring)// : w(w), h(h)
     {
     	auto pos = glm::vec3(-w/2 * 0.1f, ((h / 2) - row) * 0.1f, 0);
 		//buffer.addVertex({pos, glm::vec3(0,0,0), glm::vec2(0,row*1.f/h), glm::vec4(1,1,1,1)});
-    	masses.create(pos, 1, true,1.f, glm::vec3(1,0,0));
+    	masses.create(pos, 1, true, 0.05f, glm::vec3(1,0,0));
         //m_masses.push_back(MassePtr(new MasseFixe(pos)));
     }
 	for(int col = 1; col<w; ++col)
@@ -26,7 +26,7 @@ Flag::Flag(int w, int h, Masses& masses, SpringBreaks& spring)// : w(w), h(h)
 			auto pos = glm::vec3(((-w/2) + col) * 0.1f, ((h / 2) - row)* 0.1f, 0);
 			//buffer.addVertex({pos, glm::vec3(0,0,0), glm::vec2(col*1.f/w,row*1.f/h), glm::vec4(1,1,1,1)});
 			//m_masses.push_back(MassePtr(new MasseLibre(pos, 1.f)));
-            masses.create(pos, 1, false);
+            masses.create(pos, 1, false, 0.05f);
 		}
 	/*for(int col = 0; col < w-1; ++col)
     {

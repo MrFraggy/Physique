@@ -1,0 +1,6 @@
+#include <PartyKel/glm.hpp>
+
+__global__ void leapFrogKernel(bool* fxd, glm::vec3* pos, glm::vec3* vel, glm::vec3* frc, float* mass, int count)
+{
+	
+}

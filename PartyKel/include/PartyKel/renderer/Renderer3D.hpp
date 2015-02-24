@@ -22,7 +22,7 @@ public:
                        const glm::vec3* positionArray,
                        const float* massArray,
                        const glm::vec3* colorArray,
-                       float massScale = 0.05);
+                       float massScale = 1);
 
     void drawLines(uint32_t count, const glm::vec3* linesArray);
 
