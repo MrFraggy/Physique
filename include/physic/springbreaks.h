@@ -20,7 +20,7 @@ public:
 	}
 
 	void update() {
-		const float raideur = 100;
+		const float raideur = 10000;
 		auto& forces = masses.getForces();
 		auto& velocities = masses.getVelocities();
 		auto& positions = masses.getPositions();
@@ -34,13 +34,6 @@ public:
 			glm::vec3 dir = positions[id1]-positions[id2];
 			float dist = glm::length(dir);
 			float forceRessort = -raideur*(1-(baseLengths[i]/std::max(0.001f, dist)));
-			
-			std::cout << id1 << " " << id2 << std::endl 
-					<< baseLengths[i] << std::endl
-					<< dist << std::endl
-					<< forceRessort << std::endl
-					<< positions[id2] << std::endl 
-					<< positions[id1] << std::endl << std::endl;
 			//std::getchar();
 			forcesAccumulatorM1 += dir*forceRessort;
 			forcesAccumulatorM2 += -dir*forceRessort;
@@ -52,7 +45,7 @@ public:
 
 
 			// Operations atomique
-			forces[id1] -= forcesAccumulatorM1;
+			forces[id1] += forcesAccumulatorM1;
 			forces[id2] += forcesAccumulatorM2;
 			//std::cout << forcesAccumulatorM1 << std::endl;
 		}

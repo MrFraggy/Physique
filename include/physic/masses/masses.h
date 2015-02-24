@@ -31,6 +31,8 @@ public:
 
 	void setUpdateFunction(MassUpdateFunction u) { updateFunc = u; }
 
+	int32_t getCount() { return positions.size(); }
+
 	std::vector<glm::vec3>& getPositions() { return positions; }
 	std::vector<glm::vec3>& getVelocities() { return velocities; }
 	std::vector<glm::vec3>& getForces() { return forces; }

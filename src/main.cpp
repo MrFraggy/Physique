@@ -24,6 +24,7 @@
 #include <thread>
 #include <sstream>
 #include <ctime>
+#include <unistd.h>
 
 static const Uint32 WINDOW_WIDTH = 1024;
 static const Uint32 WINDOW_HEIGHT = 768;
@@ -108,7 +109,7 @@ int main(void)
     //  Pont / Ficelle 
     /////////////////////////////////////
     //*
-    Masses& masses = modeleur.getMasses();
+    /*Masses& masses = modeleur.getMasses();
     masses.create(glm::vec3(-2.5,0,0), 1.f, true, 1.f, glm::vec3(1,0,0));
     masses.create(glm::vec3(-2.0,0,0), 1.f, false);
     masses.create(glm::vec3(-1.5,0,0), 1.f, false);
@@ -132,7 +133,7 @@ int main(void)
     springbreaks.create(7,8,0.5f);
     springbreaks.create(8,9,0.5f);
     springbreaks.create(9,10,0.5f);
-   
+   */
     ConstantForces& constantForces = modeleur.getConstantForces();
     constantForces.create(glm::vec3(0,G,0));
     //*/
@@ -140,23 +141,15 @@ int main(void)
     //////////////////////////////////////
     //  Drapeau
     //////////////////////////////////////
-    /*
+    
     const int height = 25;
     const int width = 25;
 
-    Flag flag(25,25);
-    auto masses = flag.getMasses();
-    auto links = flag.getLinks();
+    Masses& masses = modeleur.getMasses();
+    SpringBreaks& springbreaks = modeleur.getSpringBreaks();
+    
+    Flag flag(25,25, masses, springbreaks);
 
-    std::cout << "nb liaison : " << links.size() << std::endl;
-    std::cout << "nb masses : " << masses.size() << std::endl;
-
-    for(auto& m: masses)
-        modeleur.addMasse(m);
-
-    for(auto& l: links)
-        modeleur.addLink(l);
-    //*/
     CRenderer renderer;
     
 
@@ -180,18 +173,20 @@ int main(void)
     bool debug = false, simulate = false;
 
     std::thread physicThread([&modeleur, &done, &pps, &simulate]() {
-        Uint32 lastTime = SDL_GetTicks();
-        const uint32_t FrameDuration = 1000.f * dt;
+        const uint32_t FrameDuration = 2000.f * dt;
+        Clock clock;
         while(!done) {
             if(simulate)
+            {
                 modeleur.update();
-
-            Uint32 d = SDL_GetTicks() - lastTime;
-            if(d < dt) {
-                SDL_Delay(FrameDuration - d);
+                ++pps;
             }
-            lastTime = SDL_GetTicks();
-            ++pps;
+            
+            uint32_t elapsed = clock.GetMilliseconds();
+            if(elapsed < FrameDuration) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(FrameDuration-elapsed));
+            }
+            clock.Restart();
         }
     });
 
