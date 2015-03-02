@@ -8,7 +8,7 @@
 class Frein : public Force
 {
 public:
-	Frein(float viscosite = 100);
+	Frein(float viscosite = 10);
 	void onUpdate(Masse* m1, Masse* m2);
 protected:
 	float viscosite;
