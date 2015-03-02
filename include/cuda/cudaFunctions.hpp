@@ -9,7 +9,7 @@
 void cudaLeapFrog(std::vector<unsigned char>& fxd, std::vector<glm::vec3>& p, 
 std::vector<glm::vec3>& v, std::vector<glm::vec3>& f, std::vector<float> mass);
 
-void cudaConstantForces(std::vector<glm::vec3>& cf);
+void cudaConstantForces(std::vector<glm::vec3>& cf, std::vector<glm::vec3>& df);
 void cudaSpringbreak(std::vector<int>& mIds, std::vector<float>& blengths);
 
 bool cudaSnapshot(std::vector<glm::vec3>& pos);

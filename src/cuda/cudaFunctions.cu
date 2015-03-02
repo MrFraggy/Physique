@@ -60,7 +60,7 @@ void cudaLeapFrog(std::vector<unsigned char>& fxd, std::vector<glm::vec3>& p,
 	cudaMemcpy(mass.data(), d_Mass, sizeof(float)*d_MSize, cudaMemcpyDeviceToHost);*/
 }
 
-void cudaConstantForces(std::vector<glm::vec3>& cf)
+void cudaConstantForces(std::vector<glm::vec3>& cf, std::vector<glm::vec3>& df)
 {
 	if(d_Pos == NULL)
 	{
