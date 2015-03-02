@@ -51,14 +51,14 @@ public:
 		for(auto& ma: masses)
 		{
 			p.push_back(ma->getPosition());
-			m.push_back(ma->getMasse());
+			m.push_back(ma->getRadius());
 			c.push_back(ma->getColor());
 		}
 
 		renderer.drawParticles(p.size(), 
 								p.data(),
 								m.data(),
-								c.data());
+								c.data(), 1.f);
 	}
 
 	void setViewMatrix(const glm::mat4& m)
@@ -79,7 +79,7 @@ protected:
 int main(void)
 {
     WindowManager wm(WINDOW_WIDTH, WINDOW_HEIGHT, "Newton was a Geek");
-    wm.setFramerate(30);
+    wm.setFramerate(60);
     std::srand(std::time(0));
 
     //Renderer3D renderer;
@@ -184,20 +184,25 @@ int main(void)
     int mode = 2;
     int fps = 0, pps = 0;
     bool debug = false, simulate = false;
+    uint32_t idleTime = 0;
 
-    std::thread physicThread([&modeleur, &done, &pps, &simulate]() {
-        Uint32 lastTime = SDL_GetTicks();
+    std::thread physicThread([&modeleur, &done, &pps, &simulate, &idleTime]() {
         const uint32_t FrameDuration = 1000.f * dt;
+        Clock clock;
+        modeleur.update();
         while(!done) {
             if(simulate)
+            {
                 modeleur.update();
-
-            Uint32 d = SDL_GetTicks() - lastTime;
-            if(d < dt) {
-                SDL_Delay(FrameDuration - d);
+                ++pps;
             }
-            lastTime = SDL_GetTicks();
-            ++pps;
+            
+            uint32_t elapsed = clock.GetMilliseconds();
+            if(elapsed < FrameDuration) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(FrameDuration-elapsed));
+                idleTime += (FrameDuration-elapsed);
+            }
+            clock.Restart();
         }
     });
 
@@ -267,11 +272,11 @@ int main(void)
         }
         flag.update();
 
-        if(fpsClock.GetSeconds() > 1)
+        if(fpsClock.GetSeconds() >= 1)
         {
             std::ostringstream oss;
-            oss << "Flag - FPS: " << fps << " - PPS: " << pps;
-            fps = 0; pps = 0;
+            oss << "Flag - FPS: " << fps << " - PPS: " << pps << " Idle: " << idleTime << "ms";
+            fps = 0; pps = 0; idleTime = 0;
             SDL_WM_SetCaption(oss.str().c_str(), 0);
             fpsClock.Restart();
         }

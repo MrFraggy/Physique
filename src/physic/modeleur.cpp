@@ -1,16 +1,18 @@
 #include <physic/modeleur.h>
 
+
+static const float L0 = .1f;
 void Modeleur::update()
 {
 	for(auto& l: links)
 		l->update();
-	for(int i = 0; i<masses.size(); ++i)
+	for(auto& m: masses)
 	{
 		for(auto& f: forces)
-			f->onUpdate(masses[i].get(), nullptr);
+			f->onUpdate(m.get(), nullptr);
 
-		masses[i]->update();
-		auto& masseLinks = masses[i]->getLinks();
+		m->update();
+		/*auto& masseLinks = masses[i]->getLinks();
 
 		for(int j = i+1; j<masses.size(); ++j)
 		{
@@ -53,6 +55,23 @@ void Modeleur::update()
 					}
 				}
 			}
+		}*/
+	}
+
+	for(int i = 0; i<masses.size(); ++i)
+	{
+		for(int j = i+1; j<masses.size(); ++j)
+		{
+			auto p1 = masses[i]->getPosition();
+			auto p2 = masses[j]->getPosition();
+			auto dir = p2-p1;
+			float dist = glm::length(dir);
+			if(dist > L0)
+				continue;
+
+			float forceRessort = -10000*(L0-dist);
+			masses[i]->addForce(dir*forceRessort);
+			masses[j]->addForce(-dir*forceRessort);
 		}
 	}
 }

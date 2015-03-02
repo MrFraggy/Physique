@@ -5,7 +5,7 @@ Masse::Masse(const glm::vec3& pos, float masse, const glm::vec3& c) :
 	pos(pos), 
 	masse(masse),
 	color(c),
-	rayon(1)
+	rayon(.1f)
 {
 
 }
@@ -38,6 +38,11 @@ float Masse::getMasse()
 glm::vec3 Masse::getColor()
 {
 	return color;
+}
+
+float Masse::getRadius()
+{
+	return rayon;
 }
 
 void Masse::addLink(Link* l)

@@ -21,7 +21,8 @@ public:
 	glm::vec3 getVitesse();
 	float getMasse();
 	glm::vec3 getColor();
-
+	float getRadius();
+	
 	void addLink(Link* l);
 	void removeLink(Link* l);
 	const std::vector<Link*>& getLinks();
