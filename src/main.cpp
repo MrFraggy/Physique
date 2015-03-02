@@ -249,6 +249,8 @@ int main(void)
                         debug = !debug;
                     else if(e.key.keysym.sym == SDLK_o)
                         simulate = !simulate;
+                    else if(e.key.keysym.sym == SDLK_ESCAPE)
+                        done = true;
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                     if(e.button.button == SDL_BUTTON_WHEELUP) {
