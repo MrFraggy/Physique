@@ -5,7 +5,7 @@ Masse::Masse(const glm::vec3& pos, float masse, const glm::vec3& c) :
 	pos(pos), 
 	masse(masse),
 	color(c),
-	rayon(.1f)
+	rayon(.05f)
 {
 
 }

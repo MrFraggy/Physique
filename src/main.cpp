@@ -58,7 +58,7 @@ public:
 		renderer.drawParticles(p.size(), 
 								p.data(),
 								m.data(),
-								c.data(), .6f);
+								c.data());
 	}
 
 	void setViewMatrix(const glm::mat4& m)
@@ -167,7 +167,7 @@ int main(void)
         renderer.addMasse(m);
 
     modeleur.addMacroForce(ForceConstantePtr(new ForceConstante(glm::vec3(0,G,0))));
-    //modeleur.addMacroForce(VentPtr(new Vent(glm::vec3(20,1,1))));
+    modeleur.addMacroForce(VentPtr(new Vent(glm::vec3(20,1,1))));
 
     glm::mat4 proj = glm::perspective(70.f, WINDOW_WIDTH*1.f/WINDOW_HEIGHT, 0.1f, 100.f);
     Shader shader;

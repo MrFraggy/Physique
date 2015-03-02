@@ -1,7 +1,7 @@
 #include <physic/modeleur.h>
 
+static const float L0 = .05f * 2;
 
-static const float L0 = .1f;
 void Modeleur::update()
 {
 	for(auto& l: links)
@@ -69,9 +69,16 @@ void Modeleur::update()
 			if(dist > L0)
 				continue;
 
-			float forceRessort = -10000*(L0-dist);
+			float forceRessort = -1000000 * (L0-dist);
 			masses[i]->addForce(dir*forceRessort);
 			masses[j]->addForce(-dir*forceRessort);
+
+			// Maybe useless ??? Add break
+			auto vit1 = masses[i]->getVitesse();
+			auto vit2 = masses[j]->getVitesse();
+			auto forceFrein = (vit1 - vit2) * 30.f;
+			masses[i]->addForce(-forceFrein);
+			masses[j]->addForce(forceFrein);
 		}
 	}
 }

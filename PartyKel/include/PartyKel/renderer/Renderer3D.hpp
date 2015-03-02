@@ -22,7 +22,7 @@ public:
                        const glm::vec3* positionArray,
                        const float* massArray,
                        const glm::vec3* colorArray,
-                       float massScale = 0.05);
+                       float massScale = 1.f);
 
     void setProjMatrix(const glm::mat4& P) {
         m_ProjMatrix = P;

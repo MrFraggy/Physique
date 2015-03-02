@@ -21,7 +21,7 @@ public:
                        const glm::vec2* positionArray,
                        const float* massArray,
                        const glm::vec3* colorArray,
-                       float massScale = 0.05);
+                       float massScale = 1.f);
 
     void drawPolygon(uint32_t count,
                      const glm::vec2* position,
