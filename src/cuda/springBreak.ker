@@ -16,7 +16,7 @@ __global__ void springbreakKernel(glm::vec3* pos, glm::vec3* frc, glm::vec3* vel
 {
 	const float Fe = 500.f;
 	const float raideur = 10000;
-	const float viscosity = 100;
+	const float viscosity = 10;
 
 	const unsigned long long int blockId = blockIdx.x //1D
 	        + blockIdx.y * gridDim.x; //2D
@@ -43,8 +43,7 @@ __global__ void springbreakKernel(glm::vec3* pos, glm::vec3* frc, glm::vec3* vel
 		if(dist < 0.001f)
 			return;
 		float forceRessort = 0;
-		if(std::fabs(baseDist - dist) > 0.00001)
-			forceRessort = -raideur*(1-(baseDist/dist));
+		forceRessort = -raideur*(1-(baseDist/dist));
 
 		//if(id == 0)
 		//printf("bases: %f %f %f\n", baseDist, dist, forceRessort);
@@ -54,7 +53,7 @@ __global__ void springbreakKernel(glm::vec3* pos, glm::vec3* frc, glm::vec3* vel
 		forcesAccumulatorM2 += -dir*forceRessort;
 
 		// Apply Brake force
-		glm::vec3 forceFrein = (vel[id1] - vel[id2]) * (viscosity/Fe);
+		glm::vec3 forceFrein = (vel[id1] - vel[id2]) * (viscosity);
 		/*if(id == 0) {
 			printf("vel1: %f %f %f\n", vel[id1].x, vel[id1].y, vel[id1].z);
 			printf("vel2: %f %f %f\n", vel[id2].x, vel[id2].y, vel[id2].z);
