@@ -4,6 +4,8 @@
 #include <PartyKel/glm.hpp>
 #include <iostream>
 
+#include <cuda/cudaFunctions.hpp>
+
 class SpringBreaks {
 public:
 	SpringBreaks(Masses& masses) : masses(masses) {}
@@ -37,7 +39,7 @@ public:
 		auto& forces = masses.getForces();
 		auto& velocities = masses.getVelocities();
 		auto& positions = masses.getPositions();
-		const int size = massesIds.size()/2;
+		/*const int size = massesIds.size()/2;
 		for(int i = 0; i<size; ++i)
 		{
 			int id1 = massesIds[i*2], id2 = massesIds[i*2+1];
@@ -61,7 +63,8 @@ public:
 			forces[id1] += forcesAccumulatorM1;
 			forces[id2] += forcesAccumulatorM2;
 			//std::cout << forcesAccumulatorM1 << std::endl;
-		}
+		}*/
+		cudaSpringbreak(massesIds, baseLengths);
 	}
 
 	std::vector<int>& getMassesIds() { return massesIds; }

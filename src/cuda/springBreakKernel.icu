@@ -1,0 +1,71 @@
+#include <PartyKel/glm.hpp>
+
+__device__ void atomicAdd(glm::vec3& a, const glm::vec3& b)
+{
+	atomicAdd(&a.x, b.x);
+	atomicAdd(&a.y, b.y);
+	atomicAdd(&a.z, b.z);
+}
+
+__device__ float c_max(float a, float b)
+{
+	return a > b ? a : b;
+}
+
+__global__ void springbreakKernel(glm::vec3* pos, glm::vec3* frc, glm::vec3* vel, int* massesIds, float* blengths, int masscount)
+{
+	const float Fe = 500.f;
+	const float raideur = 10000;
+	const float viscosity = 100;
+
+	const unsigned long long int blockId = blockIdx.x //1D
+	        + blockIdx.y * gridDim.x; //2D
+
+	const unsigned long long int threadId = threadIdx.x + threadIdx.y*blockDim.x;
+
+	const unsigned long long int id = blockId * blockDim.x * blockDim.y + threadId;
+
+	// Dl = d - l0
+	// F = -kDl -Zdv
+	if(id < masscount)
+	{
+		int id1 = massesIds[id*2], id2 = massesIds[id*2+1];
+		if(id == 0)
+			printf("%f %f %f\n", pos[id2].x, pos[id2].y, pos[id2].z);
+		
+
+		glm::vec3 forcesAccumulatorM1, forcesAccumulatorM2;
+
+		// Apply spring force
+		glm::vec3 dir = pos[id1]-pos[id2];
+		float dist = glm::length(dir);
+		float baseDist = blengths[id];
+		if(dist < 0.001f)
+			return;
+		float forceRessort = 0;
+		if(std::fabs(baseDist - dist) > 0.00001)
+			forceRessort = -raideur*(1-(baseDist/dist));
+
+		if(id == 0)
+		printf("bases: %f %f %f\n", baseDist, dist, forceRessort);
+		
+		//std::getchar();
+		forcesAccumulatorM1 += dir*forceRessort;
+		forcesAccumulatorM2 += -dir*forceRessort;
+
+		// Apply Brake force
+		glm::vec3 forceFrein = (vel[id1] - vel[id2]) * (viscosity);
+		if(id == 0) {
+			printf("vel1: %f %f %f\n", vel[id1].x, vel[id1].y, vel[id1].z);
+			printf("vel2: %f %f %f\n", vel[id2].x, vel[id2].y, vel[id2].z);
+			printf("frein: %f %f %f\n", forceFrein.x, forceFrein.y, forceFrein.z);
+		}
+		
+		forcesAccumulatorM1 -= forceFrein;
+		forcesAccumulatorM2 += forceFrein;
+
+		// Operations atomique
+		frc[id1] += forcesAccumulatorM1;
+		frc[id2] += forcesAccumulatorM2;
+	}
+}

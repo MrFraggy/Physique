@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cuda/cudaFunctions.hpp>
+
 class ConstantForces {
 public:
 	ConstantForces(Masses& masses) : masses(masses) {}
@@ -14,7 +16,8 @@ public:
 
 	void update()
 	{
-		auto& forces = masses.getForces();
+		cudaConstantForces(constantForces);
+		/*auto& forces = masses.getForces();
 		for(int j = 0; j<constantForces.size(); ++j) {
 			auto tmp = deviationForces[j];
 			auto deviation = glm::linearRand(-tmp,tmp);
@@ -22,7 +25,7 @@ public:
 			{
 				forces[i] += constantForces[j]+deviation;
 			}
-		}
+		}*/
 	}
 
 protected:

@@ -13,6 +13,7 @@ find_package(CUDA REQUIRED)
 
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
 #set(CMAKE_EXE_FLAGS "${CMAKE_EXE_FLAGS} -pg")
+set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_20")
 
 # Pour gérer un bug a la fac, a supprimer sur machine perso:
 #set(OPENGL_LIBRARIES /usr/lib/x86_64-linux-gnu/libGL.so.1)

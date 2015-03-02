@@ -3,6 +3,7 @@
 #include <functional>
 #include <vector>
 #include <iostream>
+#include "../../cuda/cudaFunctions.hpp"
 
 typedef std::function<void(bool, glm::vec3&, glm::vec3&, glm::vec3&, float)> MassUpdateFunction;
 
@@ -19,14 +20,15 @@ public:
 		colors.push_back(color);
 		masses.push_back(mass);
 		radius.push_back(rad);
-		fixed.push_back(fix);
+		fixed.push_back(fix ? 1 : 0);
 		return id;
 	}
 
 	void update() 
 	{
-		for(unsigned int i = 0; i<positions.size(); ++i)
-			updateFunc(fixed[i], positions[i], velocities[i], forces[i], masses[i]);
+		cudaLeapFrog(fixed, positions, velocities, forces, masses);
+		//for(unsigned int i = 0; i<positions.size(); ++i)
+		//	updateFunc(fixed[i], positions[i], velocities[i], forces[i], masses[i]);
 	}
 
 	void setUpdateFunction(MassUpdateFunction u) { updateFunc = u; }
@@ -39,7 +41,7 @@ public:
 	std::vector<glm::vec3>& getColors() { return colors; }
 	std::vector<float>& getMasses() { return masses; }
 	std::vector<float>& getRadius() { return radius; }
-	std::vector<bool>& getFixedStates() { return fixed; }
+	std::vector<unsigned char>& getFixedStates() { return fixed; }
 
 protected:
 	std::vector<glm::vec3> positions;
@@ -48,7 +50,7 @@ protected:
 	std::vector<glm::vec3> colors;
 	std::vector<float> masses;
 	std::vector<float> radius;
-	std::vector<bool> fixed;
+	std::vector<unsigned char> fixed;
 
 	MassUpdateFunction updateFunc;
 };

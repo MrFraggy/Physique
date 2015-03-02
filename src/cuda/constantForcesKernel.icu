@@ -1,0 +1,21 @@
+#include <PartyKel/glm.hpp>
+
+
+__global__ void constantForcesKernel(glm::vec3* frc, glm::vec3* cst, int masscount, int frccount)
+{
+	const unsigned long long int blockId = blockIdx.x //1D
+	        + blockIdx.y * gridDim.x; //2D
+
+	const unsigned long long int threadId = threadIdx.x + threadIdx.y*blockDim.x;
+
+	const unsigned long long int id = blockId * blockDim.x * blockDim.y + threadId;
+
+
+	if(id < masscount)
+	{
+		for(int i = 0; i<frccount; ++i)
+		{
+			frc[id] += cst[i];
+		}
+	}
+}

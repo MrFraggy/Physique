@@ -136,7 +136,7 @@ int main(void)
    */
     ConstantForces& constantForces = modeleur.getConstantForces();
     constantForces.create(glm::vec3(0,G,0));
-    constantForces.create(glm::vec3(20,1,1), glm::vec3(50,50,50));
+    //constantForces.create(glm::vec3(20,1,1), glm::vec3(50,50,50));
     //*/
 
     //////////////////////////////////////
@@ -193,6 +193,10 @@ int main(void)
         }
     });
 
+    auto pos = masses.getPositions();
+    auto& rad = masses.getRadius();
+    auto& col = masses.getColors();
+
     while(!done) {
         wm.startMainLoop();
 
@@ -201,7 +205,8 @@ int main(void)
         renderer.setViewMatrix(view);
         renderer.clear();
         renderer.clearAll();
-        renderer.addAll(masses.getPositions(), masses.getRadius(), masses.getColors());
+        if(cudaSnapshot(pos))
+            renderer.addAll(pos, rad, col);
         renderer.render();
         
         /*
