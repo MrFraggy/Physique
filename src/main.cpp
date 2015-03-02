@@ -58,7 +58,7 @@ public:
 		renderer.drawParticles(p.size(), 
 								p.data(),
 								m.data(),
-								c.data(), 1.f);
+								c.data(), .6f);
 	}
 
 	void setViewMatrix(const glm::mat4& m)
