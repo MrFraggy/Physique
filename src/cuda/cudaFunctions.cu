@@ -1,8 +1,8 @@
 #include "cuda/cudaFunctions.hpp"
 
-#include "leapFrogKernel.icu"
-#include "constantForcesKernel.icu"
-#include "springBreakKernel.icu"
+#include "leapFrog.ker"
+#include "constantForces.ker"
+#include "springBreak.ker"
 
 #include <iostream>
 
@@ -64,7 +64,6 @@ void cudaConstantForces(std::vector<glm::vec3>& cf)
 {
 	if(d_Pos == NULL)
 	{
-		std::cerr << "dPos null" << std::endl;
 		return;
 	}
 

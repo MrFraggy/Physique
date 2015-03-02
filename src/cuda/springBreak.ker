@@ -1,6 +1,6 @@
 #include <PartyKel/glm.hpp>
 
-__device__ void atomicAdd(glm::vec3& a, const glm::vec3& b)
+__device__ void catomicAdd(glm::vec3& a, const glm::vec3& b)
 {
 	atomicAdd(&a.x, b.x);
 	atomicAdd(&a.y, b.y);
@@ -30,8 +30,8 @@ __global__ void springbreakKernel(glm::vec3* pos, glm::vec3* frc, glm::vec3* vel
 	if(id < masscount)
 	{
 		int id1 = massesIds[id*2], id2 = massesIds[id*2+1];
-		if(id == 0)
-			printf("%f %f %f\n", pos[id2].x, pos[id2].y, pos[id2].z);
+		//if(id == 0)
+		//	printf("%f %f %f\n", pos[id2].x, pos[id2].y, pos[id2].z);
 		
 
 		glm::vec3 forcesAccumulatorM1, forcesAccumulatorM2;
@@ -46,26 +46,26 @@ __global__ void springbreakKernel(glm::vec3* pos, glm::vec3* frc, glm::vec3* vel
 		if(std::fabs(baseDist - dist) > 0.00001)
 			forceRessort = -raideur*(1-(baseDist/dist));
 
-		if(id == 0)
-		printf("bases: %f %f %f\n", baseDist, dist, forceRessort);
+		//if(id == 0)
+		//printf("bases: %f %f %f\n", baseDist, dist, forceRessort);
 		
 		//std::getchar();
 		forcesAccumulatorM1 += dir*forceRessort;
 		forcesAccumulatorM2 += -dir*forceRessort;
 
 		// Apply Brake force
-		glm::vec3 forceFrein = (vel[id1] - vel[id2]) * (viscosity);
-		if(id == 0) {
+		glm::vec3 forceFrein = (vel[id1] - vel[id2]) * (viscosity/Fe);
+		/*if(id == 0) {
 			printf("vel1: %f %f %f\n", vel[id1].x, vel[id1].y, vel[id1].z);
 			printf("vel2: %f %f %f\n", vel[id2].x, vel[id2].y, vel[id2].z);
 			printf("frein: %f %f %f\n", forceFrein.x, forceFrein.y, forceFrein.z);
-		}
+		}*/
 		
 		forcesAccumulatorM1 -= forceFrein;
 		forcesAccumulatorM2 += forceFrein;
 
 		// Operations atomique
-		frc[id1] += forcesAccumulatorM1;
-		frc[id2] += forcesAccumulatorM2;
+		catomicAdd(frc[id1],forcesAccumulatorM1);
+		catomicAdd(frc[id2], forcesAccumulatorM2);
 	}
 }

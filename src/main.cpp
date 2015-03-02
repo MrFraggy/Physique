@@ -110,17 +110,17 @@ int main(void)
     /////////////////////////////////////
     //*
     /*Masses& masses = modeleur.getMasses();
-    masses.create(glm::vec3(-2.5,0,0), 1.f, true, 1.f, glm::vec3(1,0,0));
-    masses.create(glm::vec3(-2.0,0,0), 1.f, false);
-    masses.create(glm::vec3(-1.5,0,0), 1.f, false);
-    masses.create(glm::vec3(-1.0,0,0), 1.f, false);
-    masses.create(glm::vec3(-0.5,0,0), 1.f, false);
-    masses.create(glm::vec3(-0.0,0,0), 1.f, false);
-    masses.create(glm::vec3( 0.5,0,0), 1.f, false);
-    masses.create(glm::vec3( 1.0,0,0), 1.f, false);
-    masses.create(glm::vec3( 1.5,0,0), 1.f, false);
-    masses.create(glm::vec3( 2.0,0,0), 1.f, false);
-    masses.create(glm::vec3( 2.5,0,0), 1.f, true, 1.f, glm::vec3(1,0,0));
+    masses.create(glm::vec3(-2.5,0,0), 1.f, true, 0.1f, glm::vec3(1,0,0));
+    masses.create(glm::vec3(-2.0,0,0), 1.f, false, 0.1f);
+    masses.create(glm::vec3(-1.5,0,0), 1.f, false, 0.1f);
+    masses.create(glm::vec3(-1.0,0,0), 1.f, false, 0.1f);
+    masses.create(glm::vec3(-0.5,0,0), 1.f, false, 0.1f);
+    masses.create(glm::vec3(-0.0,0,0), 1.f, false, 0.1f);
+    masses.create(glm::vec3( 0.5,0,0), 1.f, false, 0.1f);
+    masses.create(glm::vec3( 1.0,0,0), 1.f, false, 0.1f);
+    masses.create(glm::vec3( 1.5,0,0), 1.f, false, 0.1f);
+    masses.create(glm::vec3( 2.0,0,0), 1.f, false, 0.1f);
+    masses.create(glm::vec3( 2.5,0,0), 1.f, true, 0.1f, glm::vec3(1,0,0));
 
     SpringBreaks& springbreaks = modeleur.getSpringBreaks();
     springbreaks.create(0,1,0.5f);
@@ -132,11 +132,11 @@ int main(void)
     springbreaks.create(6,7,0.5f);
     springbreaks.create(7,8,0.5f);
     springbreaks.create(8,9,0.5f);
-    springbreaks.create(9,10,0.5f);
-   */
+    springbreaks.create(9,10,0.5f);*/
+   
     ConstantForces& constantForces = modeleur.getConstantForces();
     constantForces.create(glm::vec3(0,G,0));
-    //constantForces.create(glm::vec3(20,1,1), glm::vec3(50,50,50));
+    constantForces.create(glm::vec3(20,1,1), glm::vec3(500,500,500));
     //*/
 
     //////////////////////////////////////
