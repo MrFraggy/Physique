@@ -1,7 +1,7 @@
 #include <PartyKel/glm.hpp>
 
 
-__global__ void constantForcesKernel(glm::vec3* frc, glm::vec3* cst, int masscount, int frccount)
+__global__ void constantForcesKernel(glm::vec3* frc, glm::vec3* cst, glm::vec3* dev, int masscount, int frccount, glm::vec3 intensity)
 {
 	const unsigned long long int blockId = blockIdx.x //1D
 	        + blockIdx.y * gridDim.x; //2D
@@ -15,7 +15,7 @@ __global__ void constantForcesKernel(glm::vec3* frc, glm::vec3* cst, int masscou
 	{
 		for(int i = 0; i<frccount; ++i)
 		{
-			frc[id] += cst[i];
+			frc[id] += cst[i]+dev[i]*intensity;
 		}
 	}
 }

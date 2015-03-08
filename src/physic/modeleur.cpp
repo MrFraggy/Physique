@@ -1,5 +1,6 @@
 #include <physic/modeleur.h>
 #include <iostream>
+#include <cuda/cudaFunctions.hpp>
 
 static const float MIN_DIST = 0.01f;
 static const float MAX_DIST = 1.0f;
@@ -21,7 +22,9 @@ void Modeleur::update()
 	springBreaks.update();
 	constantForces.update();
 	masses.update();
-
+#ifdef CUDAPHYSIC
+	cudaAutoCollide();
+#endif
 	// Autocollisions
 	/*auto& positions = masses.getPositions();
 	auto& radius = masses.getRadius();

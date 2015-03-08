@@ -26,9 +26,12 @@ public:
 
 	void update() 
 	{
+#ifdef CUDAPHYSIC
 		cudaLeapFrog(fixed, positions, velocities, forces, masses);
-		//for(unsigned int i = 0; i<positions.size(); ++i)
-		//	updateFunc(fixed[i], positions[i], velocities[i], forces[i], masses[i]);
+#else
+		for(unsigned int i = 0; i<positions.size(); ++i)
+			updateFunc(fixed[i], positions[i], velocities[i], forces[i], masses[i]);
+#endif
 	}
 
 	void setUpdateFunction(MassUpdateFunction u) { updateFunc = u; }

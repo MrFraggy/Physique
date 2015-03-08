@@ -5,6 +5,7 @@ project(Imac3-MoteursPhysiques-PartyKel)
 add_definitions(-std=c++11)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
+set(BUILD_CUDA 1)
 
 find_package(SDL REQUIRED)
 find_package(OpenGL REQUIRED)
@@ -27,6 +28,13 @@ set(ALL_LIBRARIES PartyKel AntTweakBar ${SDL_LIBRARY} ${OPENGL_LIBRARIES} ${GLEW
 
 file(GLOB_RECURSE SRC_FILES src/*.cpp src/*.cu)
 #file(GLOB_RECURSE CUDA_SRC_FILES src/*.cu)
-add_definitions(-DCUDA_VERSION=5000)
-cuda_add_executable(masse ${SRC_FILES} src/main.cpp)
+
+if(${BUILD_CUDA})
+	add_definitions(-DCUDA_VERSION=5000)
+	add_definitions(-DCUDAPHYSIC)
+	cuda_add_executable(masse ${SRC_FILES} src/main.cpp)
+else(${BUILD_CUDA})
+	add_executable(masse ${SRC_FILES} src/main.cpp)
+endif(${BUILD_CUDA})
+
 target_link_libraries(masse ${ALL_LIBRARIES})

@@ -1,0 +1,41 @@
+#include <PartyKel/glm.hpp>
+
+
+static const float L0 = .05f * 2;
+
+__global__ void autoCollideKernel(glm::vec3* pos, glm::vec3* frc, glm::vec3* vit, int masscount)
+{
+	const unsigned long long int idx = blockIdx.x*blockDim.x+threadIdx.x;
+	const unsigned long long int idy = blockIdx.y*blockDim.y+threadIdx.y;
+
+	if(idx < masscount)
+	{
+		//printf("%d\n", idx);
+		//int j = id+1;
+		if(idy > idx && idy < masscount)
+		//for(int j = id+1; j<masscount; ++j)
+		{
+			glm::vec3 forceAccumulatorM1, forceAccumulatorM2;
+
+			glm::vec3 p1 = pos[idx];
+			glm::vec3 p2 = pos[idy];
+			glm::vec3 dir = p2-p1;
+			float dist = glm::length(dir);
+			if(dist > L0)
+				return;
+			float forceRessort = -1000000 * (L0-dist);
+			forceAccumulatorM1 = dir*forceRessort;
+			forceAccumulatorM2 = -dir*forceRessort;
+			
+			// Maybe useless ??? Add break
+			glm::vec3 vit1 = vit[idx];
+			glm::vec3 vit2 = vit[idy];
+			glm::vec3 forceFrein = (vit1 - vit2) * 30.f;
+			forceAccumulatorM1 -= forceFrein;
+			forceAccumulatorM2 += forceFrein;
+
+			catomicAdd(frc[idx], forceAccumulatorM1);
+			catomicAdd(frc[idy], forceAccumulatorM2);
+		}
+	}
+}

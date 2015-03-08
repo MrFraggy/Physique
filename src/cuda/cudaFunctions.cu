@@ -3,8 +3,10 @@
 #include "leapFrog.ker"
 #include "constantForces.ker"
 #include "springBreak.ker"
+#include "autoCollide.ker"
 
 #include <iostream>
+#include <ctime>
 
 unsigned int d_MSize = 0;
 // Masses
@@ -17,6 +19,7 @@ float* d_Mass = NULL;
 // Constant forces
 unsigned int d_CstSize = 0;
 glm::vec3* d_CstFrc = NULL;
+glm::vec3* d_DevFrc = NULL;
 
 // Spring breaks
 int* d_MIds = NULL;
@@ -72,13 +75,15 @@ void cudaConstantForces(std::vector<glm::vec3>& cf, std::vector<glm::vec3>& df)
 		d_CstSize = cf.size();
 		cudaMalloc((void**) &d_CstFrc, sizeof(glm::vec3)*d_CstSize);
 		cudaMemcpy(d_CstFrc, cf.data(), sizeof(glm::vec3)*d_CstSize, cudaMemcpyHostToDevice);
+		cudaMalloc((void**) &d_DevFrc, sizeof(glm::vec3)*d_CstSize);
+		cudaMemcpy(d_DevFrc, df.data(), sizeof(glm::vec3)*d_CstSize, cudaMemcpyHostToDevice);
 	}
-
+	glm::vec3 intensity = glm::linearRand(glm::vec3(-1,-1,-1),glm::vec3(1,1,1));
 	dim3  grid( 5, 5, 1);
 	dim3  threads( 5, 5, 1);
 
 	// execute the kernel
-	constantForcesKernel<<< grid, threads>>>(d_Frc, d_CstFrc, d_MSize, d_CstSize);
+	constantForcesKernel<<< grid, threads>>>(d_Frc, d_CstFrc, d_DevFrc, d_MSize, d_CstSize, intensity);
 }
 
 void cudaSpringbreak(std::vector<int>& mIds, std::vector<float>& blengths)
@@ -102,6 +107,16 @@ void cudaSpringbreak(std::vector<int>& mIds, std::vector<float>& blengths)
 	cudaError_t err = cudaGetLastError();
 	if(err != cudaSuccess)
 		std::cerr << err << " " << cudaGetErrorString(err) << std::endl;
+}
+
+void cudaAutoCollide()
+{
+	if(d_Pos == NULL)
+		return;
+
+	dim3  grid( 5*25, 5*25, 1);
+	dim3  threads( 5, 5, 1);
+	autoCollideKernel<<< grid, threads>>>(d_Pos, d_Frc, d_Vel, d_MCount);
 }
 
 

@@ -16,8 +16,10 @@ public:
 
 	void update()
 	{
+#ifdef CUDAPHYSIC
 		cudaConstantForces(constantForces, deviationForces);
-		/*auto& forces = masses.getForces();
+#else
+		auto& forces = masses.getForces();
 		for(int j = 0; j<constantForces.size(); ++j) {
 			auto tmp = deviationForces[j];
 			auto deviation = glm::linearRand(-tmp,tmp);
@@ -25,7 +27,8 @@ public:
 			{
 				forces[i] += constantForces[j]+deviation;
 			}
-		}*/
+		}
+#endif
 	}
 
 protected:
