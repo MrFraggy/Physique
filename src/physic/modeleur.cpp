@@ -6,6 +6,10 @@ void Modeleur::update()
 {
 	for(auto& l: links)
 		l->update();
+
+	for(auto& f : forces)
+		f->onUpdateBegin();
+
 	for(auto& m: masses)
 	{
 		for(auto& f: forces)
@@ -58,6 +62,7 @@ void Modeleur::update()
 		}*/
 	}
 
+	// Autocollisions
 	for(int i = 0; i<masses.size(); ++i)
 	{
 		for(int j = i+1; j<masses.size(); ++j)
