@@ -5,7 +5,7 @@
 #define EPSILON 0.001
 
 Vent::Vent(const glm::vec3& dir) :
-	Force(ForceIdentifier::Vent), direction(dir), variation(glm::vec3(1))
+	Force(ForceIdentifier::Vent), direction(dir), variation(glm::vec3(1)), intensity(glm::length(direction))
 {}
 
 void Vent::onUpdateBegin()
@@ -15,11 +15,11 @@ void Vent::onUpdateBegin()
 	else
 		variation -= glm::normalize(variation);
 	
-	std::cout << " variation : " << variation.x << " " << variation.y << " " << variation.z << std::endl;
+	// std::cout << " variation : " << variation.x << " " << variation.y << " " << variation.z << std::endl;
 
-	// glm::vec3 intensity = glm::linearRand(glm::vec3(0,0,0),glm::vec3(1.5,1.5,1.5));
 	direction += glm::normalize(variation);
-	std::cout << " direction " << direction.x << " " << direction.y << " " << direction.z << std::endl;
+	direction = glm::normalize(direction) * intensity;
+	// std::cout << " direction " << direction.x << " " << direction.y << " " << direction.z << std::endl;
 }
 
 void Vent::onUpdate(Masse* m1, Masse* m2)

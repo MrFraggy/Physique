@@ -15,6 +15,7 @@ public:
 protected:
 	glm::vec3 direction;
 	glm::vec3 variation;
+	float intensity;
 };
 
 typedef std::shared_ptr<Vent> VentPtr;
