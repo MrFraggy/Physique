@@ -171,12 +171,13 @@ int main(void)
     glClearColor(0.1,0.1,0.1,0);
     int mode = 2;
     int fps = 0, pps = 0;
-    bool debug = false, simulate = false;
+    bool debug = false, simulate = true;
     uint32_t idleTime = 0;
 
     std::thread physicThread([&modeleur, &done, &pps, &simulate, &idleTime]() {
         const uint32_t FrameDuration = 1000.f * dt;
         Clock clock;
+        modeleur.update();
         while(!done) {
             if(simulate)
             {
@@ -248,6 +249,8 @@ int main(void)
                         debug = !debug;
                     else if(e.key.keysym.sym == SDLK_o)
                         simulate = !simulate;
+                    else if(e.key.keysym.sym == SDLK_ESCAPE)
+                        done = true;
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                     if(e.button.button == SDL_BUTTON_WHEELUP) {
